@@ -7,7 +7,7 @@
 - [ ] **AUTH-03**: User can list their registered passkeys via `listWebAuthnCredentials()` returning credential ID, friendly name, relying party ID, authenticator attachment, transports, and creation date
 - [ ] **AUTH-04**: User can delete a registered passkey via `deleteWebAuthnCredential(credentialId)` which calls Cognito `DeleteWebAuthnCredential`
 - [ ] **AUTH-05**: User can check if the current platform supports passkeys via `isPasskeySupported()` returning a boolean
-- [ ] **AUTH-06**: User receives typed `AuthException` subtypes for passkey errors (not supported, user cancelled, registration failed, assertion failed, RP mismatch)
+- [x] **AUTH-06**: User receives typed `AuthException` subtypes for passkey errors (not supported, user cancelled, registration failed, assertion failed, RP mismatch)
 
 ## State Machine & Sign-In Flow
 
@@ -57,7 +57,7 @@
 | AUTH-03 | 5 | Pending |
 | AUTH-04 | 5 | Pending |
 | AUTH-05 | 5 | Pending |
-| AUTH-06 | 1 | Pending |
+| AUTH-06 | 1 | Complete |
 | FLOW-01 | 2 | Pending |
 | FLOW-02 | 2 | Pending |
 | FLOW-03 | 2 | Pending |
