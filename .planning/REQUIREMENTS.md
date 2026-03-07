@@ -52,29 +52,29 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | — | Pending |
-| AUTH-02 | — | Pending |
-| AUTH-03 | — | Pending |
-| AUTH-04 | — | Pending |
-| AUTH-05 | — | Pending |
-| AUTH-06 | — | Pending |
-| FLOW-01 | — | Pending |
-| FLOW-02 | — | Pending |
-| FLOW-03 | — | Pending |
-| FLOW-04 | — | Pending |
-| FLOW-05 | — | Pending |
-| PLAT-01 | — | Pending |
-| PLAT-02 | — | Pending |
-| PLAT-03 | — | Pending |
-| PLAT-04 | — | Pending |
-| PLAT-05 | — | Pending |
-| PLAT-06 | — | Pending |
-| PLAT-07 | — | Pending |
-| PLAT-08 | — | Pending |
-| UI-01 | — | Pending |
-| UI-02 | — | Pending |
-| UI-03 | — | Pending |
-| UI-04 | — | Pending |
+| AUTH-01 | 2 | Pending |
+| AUTH-02 | 5 | Pending |
+| AUTH-03 | 5 | Pending |
+| AUTH-04 | 5 | Pending |
+| AUTH-05 | 5 | Pending |
+| AUTH-06 | 1 | Pending |
+| FLOW-01 | 2 | Pending |
+| FLOW-02 | 2 | Pending |
+| FLOW-03 | 2 | Pending |
+| FLOW-04 | 1 | Pending |
+| FLOW-05 | 1 | Pending |
+| PLAT-01 | 3 | Pending |
+| PLAT-02 | 3 | Pending |
+| PLAT-03 | 4 | Pending |
+| PLAT-04 | 3 | Pending |
+| PLAT-05 | 4 | Pending |
+| PLAT-06 | 4 | Pending |
+| PLAT-07 | 1 | Pending |
+| PLAT-08 | 3, 4 | Pending |
+| UI-01 | 6 | Pending |
+| UI-02 | 6 | Pending |
+| UI-03 | 6 | Pending |
+| UI-04 | 6 | Pending |
 
 ---
 *Requirements defined: 2026-03-07*
