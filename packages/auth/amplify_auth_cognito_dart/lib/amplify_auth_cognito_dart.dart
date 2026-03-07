@@ -49,4 +49,5 @@ export 'src/model/signup/cognito_resend_sign_up_code_plugin_options.dart';
 export 'src/model/signup/cognito_resend_sign_up_code_result.dart';
 export 'src/model/signup/cognito_sign_up_plugin_options.dart';
 export 'src/model/signup/cognito_sign_up_result.dart';
+export 'src/model/webauthn/webauthn_credential_platform.dart';
 export 'src/sdk/sdk_exception.dart' hide transformSdkException;
