@@ -29,6 +29,7 @@ Last activity: 2026-03-07 — Completed 01-02 (WebAuthn JSON serialization types
 - webAuthn bridge case throws InvalidStateException as placeholder until Phase 2 implements full ceremony
 - [Phase 01]: Passkey exceptions extend AuthException via PasskeyException base, not directly
 - [Phase 01]: WebAuthnCredentialPlatform uses JSON string boundary to keep serialization in Dart layer
+- [Phase 01]: WebAuthn types use manual fromJson/toJson (no code generation) matching project patterns
 
 ## Accumulated Context
 

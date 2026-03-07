@@ -6,5 +6,8 @@
   "synthesizer_model": "sonnet",
   "roadmapper_model": "sonnet",
   "is_brownfield": true,
-  "has_codebase_map": true
+  "has_codebase_map": true,
+  "workflow": {
+    "_auto_chain_active": false
+  }
 }
