@@ -39,10 +39,7 @@ extension ChallengeNameTypeBridge on ChallengeNameType {
     ChallengeNameType.password ||
     ChallengeNameType.passwordSrp => AuthSignInStep.confirmSignInWithPassword,
     ChallengeNameType.webAuthn =>
-      throw InvalidStateException(
-        'WEB_AUTHN challenge requires platform WebAuthn bridge support. '
-        'Ensure passkey support is configured.',
-      ),
+      AuthSignInStep.confirmSignInWithCustomChallenge,
     ChallengeNameType.adminNoSrpAuth ||
     ChallengeNameType.passwordVerifier ||
     ChallengeNameType.devicePasswordVerifier ||
