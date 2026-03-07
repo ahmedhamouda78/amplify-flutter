@@ -38,6 +38,11 @@ extension ChallengeNameTypeBridge on ChallengeNameType {
       AuthSignInStep.continueSignInWithFirstFactorSelection,
     ChallengeNameType.password ||
     ChallengeNameType.passwordSrp => AuthSignInStep.confirmSignInWithPassword,
+    ChallengeNameType.webAuthn =>
+      throw InvalidStateException(
+        'WEB_AUTHN challenge requires platform WebAuthn bridge support. '
+        'Ensure passkey support is configured.',
+      ),
     ChallengeNameType.adminNoSrpAuth ||
     ChallengeNameType.passwordVerifier ||
     ChallengeNameType.devicePasswordVerifier ||
