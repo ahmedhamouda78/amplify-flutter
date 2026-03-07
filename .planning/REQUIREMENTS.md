@@ -15,7 +15,7 @@
 - [ ] **FLOW-02**: Sign-in state machine handles `SELECT_CHALLENGE` response containing `WEB_AUTHN` in `availableChallenges`, returning `AuthSignInStep.continueSignInWithFirstFactorSelection` with available factors including `AuthFactorType.webAuthn`
 - [ ] **FLOW-03**: User can select `WEB_AUTHN` via `confirmSignIn(challengeResponse: 'WEB_AUTHN')` which sends `ANSWER: WEB_AUTHN` to Cognito, receives `WEB_AUTHN` challenge with `CREDENTIAL_REQUEST_OPTIONS`, performs ceremony, and completes sign-in
 - [x] **FLOW-04**: `AuthFactorType.webAuthn` enum value is uncommented and fully functional in the type system (currently has TODO comment)
-- [ ] **FLOW-05**: WebAuthn serialization layer correctly converts between Cognito JSON format (base64url strings) and platform-specific WebAuthn types for both registration and assertion ceremonies
+- [x] **FLOW-05**: WebAuthn serialization layer correctly converts between Cognito JSON format (base64url strings) and platform-specific WebAuthn types for both registration and assertion ceremonies
 
 ## Platform Bridges
 
@@ -62,7 +62,7 @@
 | FLOW-02 | 2 | Pending |
 | FLOW-03 | 2 | Pending |
 | FLOW-04 | 1 | Complete |
-| FLOW-05 | 1 | Pending |
+| FLOW-05 | 1 | Complete |
 | PLAT-01 | 3 | Pending |
 | PLAT-02 | 3 | Pending |
 | PLAT-03 | 4 | Pending |
