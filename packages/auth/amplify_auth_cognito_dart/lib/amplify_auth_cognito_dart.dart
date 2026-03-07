@@ -51,4 +51,5 @@ export 'src/model/signup/cognito_sign_up_plugin_options.dart';
 export 'src/model/signup/cognito_sign_up_result.dart';
 export 'src/model/webauthn/passkey_types.dart';
 export 'src/model/webauthn/webauthn_credential_platform.dart';
+export 'src/sdk/cognito_webauthn_client.dart';
 export 'src/sdk/sdk_exception.dart' hide transformSdkException;
