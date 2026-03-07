@@ -99,7 +99,7 @@
 | AUTH-03 | 5 |
 | AUTH-04 | 5 |
 | AUTH-05 | 5 |
-| AUTH-06 | 1 | 1/5 | In Progress|  |
+| AUTH-06 | 1 | 3/5 | In Progress|  |
 | FLOW-02 | 2 |
 | FLOW-03 | 2 |
 | FLOW-04 | 1 |

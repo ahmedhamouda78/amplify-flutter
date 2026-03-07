@@ -25,7 +25,7 @@
 - [ ] **PLAT-04**: Web platform bridge calls `navigator.credentials.create()` and `navigator.credentials.get()` via `dart:js_interop` for WebAuthn ceremonies
 - [ ] **PLAT-05**: Windows platform bridge wraps Windows Hello / FIDO2 APIs via `windows_webauthn` FFI bindings for credential creation and assertion
 - [ ] **PLAT-06**: Linux platform bridge provides best-effort passkey support via `libfido2` FFI bindings or returns `isPasskeySupported() = false` with graceful fallback if no FIDO2 authenticator is available
-- [ ] **PLAT-07**: Each platform bridge implements a minimal interface: `createCredential(String optionsJson) -> String responseJson`, `getCredential(String optionsJson) -> String responseJson`, `isPasskeySupported() -> bool`
+- [x] **PLAT-07**: Each platform bridge implements a minimal interface: `createCredential(String optionsJson) -> String responseJson`, `getCredential(String optionsJson) -> String responseJson`, `isPasskeySupported() -> bool`
 - [ ] **PLAT-08**: Platform bridges map platform-specific errors (ASAuthorizationError, CredentialManager exceptions, DOMException, Windows/Linux errors) to typed Amplify `AuthException` subtypes
 
 ## Authenticator UI
@@ -69,7 +69,7 @@
 | PLAT-04 | 3 | Pending |
 | PLAT-05 | 4 | Pending |
 | PLAT-06 | 4 | Pending |
-| PLAT-07 | 1 | Pending |
+| PLAT-07 | 1 | Complete |
 | PLAT-08 | 3, 4 | Pending |
 | UI-01 | 6 | Pending |
 | UI-02 | 6 | Pending |
