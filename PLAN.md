@@ -1,4 +1,4 @@
-# Phase 3: WebAuthn Sign-In Ceremony — Implementation Plan
+# Phase 2: WebAuthn Sign-In Ceremony — Implementation Plan
 
 ## Overview
 
@@ -40,7 +40,7 @@ Wire the WEB_AUTHN challenge into the sign-in state machine so that when Cognito
 
 - In `configure()`, add: `_stateMachine.addBuilder<PasskeyPlatform>(_passkeyPlatformFactory)`
 - Accept an optional `PasskeyPlatform Function()?` in the plugin constructor
-- Default factory returns the `PasskeyPlatform.instance` (from Phase 2's federated plugin)
+- Default factory returns the `PasskeyPlatform.instance` (from Phase 1's federated plugin)
 
 **File:** `packages/auth/amplify_auth_cognito/lib/src/amplify_auth_cognito.dart` (Flutter wrapper)
 
@@ -179,7 +179,7 @@ Use mock `PasskeyPlatform` registered via DependencyManager.
 
 ## Dependencies
 
-- **Phase 2 output:** `PasskeyPlatform` interface with `getCredential()` method and platform implementations
+- **Phase 1 output:** `PasskeyPlatform` interface with `getCredential()` method and platform implementations
 - **Cognito SDK:** Must support `ChallengeNameType.webAuthn` and `AuthFlowType.userAuth`
 
 ## Risk Areas
