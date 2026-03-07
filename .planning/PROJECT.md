@@ -54,14 +54,27 @@ Users can sign in with passkeys as a primary authentication factor on any platfo
 - **API consistency**: Must align with existing `AuthSignInStep`, `AuthFactorType`, and `SignInResult` patterns
 - **Security**: Passkey credentials must use platform-secure storage (Keychain, Keystore, Windows Hello, etc.)
 
+## Current Milestone: v1.0 Passkey Support
+
+**Goal:** Add WebAuthn/passkey support to amplify-flutter SDK for passwordless primary sign-in and credential management across iOS, Android, macOS, Web (with best-effort Windows/Linux).
+
+**Target features:**
+- WebAuthn sign-in flow (USER_AUTH + WEB_AUTHN challenge)
+- Passkey credential registration (post-auth enrollment)
+- Credential management APIs (list, delete)
+- Platform bridges for iOS, Android, macOS, Web
+- Authenticator UI integration for passkey flows
+
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Primary sign-in only, not MFA | Reduces scope; matches reference implementations' initial rollout | — Pending |
-| All six platforms | User requirement; Windows/Linux may need best-effort approach | — Pending |
-| Full stack (plugin + UI) | Complete developer experience matching other Amplify SDKs | — Pending |
-| Follow Pigeon bridge pattern | Consistency with existing platform interop architecture | — Pending |
+| Primary sign-in only, not MFA | Reduces scope; matches reference implementations' initial rollout | Locked |
+| iOS/Android/macOS/Web first, Windows/Linux best-effort | Core platforms first; Windows/Linux have limited WebAuthn support | Locked |
+| Full stack (plugin + UI) | Complete developer experience matching other Amplify SDKs | Locked |
+| Follow Pigeon bridge pattern | Consistency with existing platform interop architecture | Locked |
+| Cognito API calls via raw HTTP, not Smithy codegen | WebAuthn APIs (Start/Complete Registration, List/Delete Credentials) not in existing Smithy model; raw HTTP is faster to implement | Locked |
+| Minimal method channel interface | Only `createCredential`, `getCredential`, `isPasskeySupported` cross the platform boundary; all Cognito logic stays in Dart | Locked |
 
 ---
-*Last updated: 2026-03-07 after project initialization*
+*Last updated: 2026-03-07 after milestone v1.0 initialization*
