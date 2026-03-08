@@ -13,7 +13,13 @@ export '../exception/amplify_exception.dart'
         UserCancelledException,
         AuthValidationException,
         NetworkException,
-        UnknownException;
+        UnknownException,
+        PasskeyException,
+        PasskeyNotSupportedException,
+        PasskeyCancelledException,
+        PasskeyRegistrationFailedException,
+        PasskeyAssertionFailedException,
+        PasskeyRpMismatchException;
 // Attributes
 export 'attribute/auth_next_update_attribute_step.dart';
 export 'attribute/auth_update_attribute_step.dart';

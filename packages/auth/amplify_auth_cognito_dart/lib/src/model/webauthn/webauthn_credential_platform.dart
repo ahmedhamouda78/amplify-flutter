@@ -1,6 +1,8 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+// ignore_for_file: comment_references
+
 /// {@template amplify_auth_cognito_dart.webauthn_credential_platform}
 /// Abstract interface for platform-specific WebAuthn/passkey operations.
 ///

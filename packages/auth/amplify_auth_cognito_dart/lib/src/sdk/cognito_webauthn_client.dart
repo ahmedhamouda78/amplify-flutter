@@ -94,7 +94,7 @@ class CognitoWebAuthnClient {
 
     // Extract the short error type name (may be fully qualified).
     final shortType =
-        errorType?.contains('#') == true
+        (errorType?.contains('#') ?? false)
             ? errorType!.split('#').last
             : errorType;
 
