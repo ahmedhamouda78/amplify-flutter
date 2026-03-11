@@ -1,0 +1,14 @@
+{
+  "project_name": "Amplify Flutter Passkey Support",
+  "created": "2026-03-07",
+  "commit_docs": true,
+  "researcher_model": "opus",
+  "synthesizer_model": "opus",
+  "roadmapper_model": "opus",
+  "is_brownfield": true,
+  "has_codebase_map": true,
+  "workflow": {
+    "_auto_chain_active": false,
+    "nyquist_validation": true
+  }
+}
