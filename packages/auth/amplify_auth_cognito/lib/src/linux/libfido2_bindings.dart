@@ -1,0 +1,518 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+// ignore_for_file: comment_references
+
+import 'dart:ffi';
+
+import 'package:ffi/ffi.dart';
+
+// ── Error constants ──────────────────────────────────────────────────────────
+
+/// libfido2 return code: success.
+const int fidoOk = 0;
+
+/// libfido2 return code: transmission error.
+const int fidoErrTx = -1;
+
+/// libfido2 return code: operation not allowed (user cancelled on some devices).
+const int fidoErrNotAllowed = 0x27;
+
+/// libfido2 return code: action timed out.
+const int fidoErrActionTimeout = 0x2F;
+
+/// libfido2 return code: PIN required.
+const int fidoErrPinRequired = 0x36;
+
+/// libfido2 return code: user verification blocked.
+const int fidoErrUvBlocked = 0x3C;
+
+/// COSE algorithm identifier for ES256 (ECDSA w/ SHA-256).
+const int coseEs256 = -7;
+
+// ── User verification option constants ───────────────────────────────────────
+
+/// Omit user verification option.
+const int fidoOptOmit = 0;
+
+/// Explicitly disable user verification.
+const int fidoOptFalse = 1;
+
+/// Require user verification.
+const int fidoOptTrue = 2;
+
+// ── Native function typedefs ─────────────────────────────────────────────────
+
+// Init
+typedef _FidoInitC = Void Function(Int32 flags);
+typedef _FidoInitDart = void Function(int flags);
+
+// Device info
+typedef _FidoDevInfoNewC = Pointer Function(Size n);
+typedef _FidoDevInfoNewDart = Pointer Function(int n);
+
+typedef _FidoDevInfoFreeC = Void Function(Pointer<Pointer> devlist, Size n);
+typedef _FidoDevInfoFreeDart = void Function(Pointer<Pointer> devlist, int n);
+
+typedef _FidoDevInfoManifestC = Int32 Function(
+  Pointer devlist,
+  Size n,
+  Pointer<Size> found,
+);
+typedef _FidoDevInfoManifestDart = int Function(
+  Pointer devlist,
+  int n,
+  Pointer<Size> found,
+);
+
+typedef _FidoDevInfoPathC = Pointer<Utf8> Function(Pointer di);
+typedef _FidoDevInfoPathDart = Pointer<Utf8> Function(Pointer di);
+
+typedef _FidoDevInfoPtrC = Pointer Function(Pointer devlist, Size idx);
+typedef _FidoDevInfoPtrDart = Pointer Function(Pointer devlist, int idx);
+
+// Device management
+typedef _FidoDevNewC = Pointer Function();
+typedef _FidoDevNewDart = Pointer Function();
+
+typedef _FidoDevFreeC = Void Function(Pointer<Pointer> dev);
+typedef _FidoDevFreeDart = void Function(Pointer<Pointer> dev);
+
+typedef _FidoDevOpenC = Int32 Function(Pointer dev, Pointer<Utf8> path);
+typedef _FidoDevOpenDart = int Function(Pointer dev, Pointer<Utf8> path);
+
+typedef _FidoDevCloseC = Int32 Function(Pointer dev);
+typedef _FidoDevCloseDart = int Function(Pointer dev);
+
+// Credential creation
+typedef _FidoCredNewC = Pointer Function();
+typedef _FidoCredNewDart = Pointer Function();
+
+typedef _FidoCredFreeC = Void Function(Pointer<Pointer> cred);
+typedef _FidoCredFreeDart = void Function(Pointer<Pointer> cred);
+
+typedef _FidoCredSetTypeC = Int32 Function(Pointer cred, Int32 type);
+typedef _FidoCredSetTypeDart = int Function(Pointer cred, int type);
+
+typedef _FidoCredSetClientdataHashC = Int32 Function(
+  Pointer cred,
+  Pointer<Uint8> hash,
+  Size hashLen,
+);
+typedef _FidoCredSetClientdataHashDart = int Function(
+  Pointer cred,
+  Pointer<Uint8> hash,
+  int hashLen,
+);
+
+typedef _FidoCredSetRpC = Int32 Function(
+  Pointer cred,
+  Pointer<Utf8> rpId,
+  Pointer<Utf8> rpName,
+);
+typedef _FidoCredSetRpDart = int Function(
+  Pointer cred,
+  Pointer<Utf8> rpId,
+  Pointer<Utf8> rpName,
+);
+
+typedef _FidoCredSetUserC = Int32 Function(
+  Pointer cred,
+  Pointer<Uint8> userId,
+  Size userIdLen,
+  Pointer<Utf8> userName,
+  Pointer<Utf8> displayName,
+  Pointer<Utf8> icon,
+);
+typedef _FidoCredSetUserDart = int Function(
+  Pointer cred,
+  Pointer<Uint8> userId,
+  int userIdLen,
+  Pointer<Utf8> userName,
+  Pointer<Utf8> displayName,
+  Pointer<Utf8> icon,
+);
+
+typedef _FidoCredSetRkC = Int32 Function(Pointer cred, Int32 rk);
+typedef _FidoCredSetRkDart = int Function(Pointer cred, int rk);
+
+typedef _FidoCredSetUvC = Int32 Function(Pointer cred, Int32 uv);
+typedef _FidoCredSetUvDart = int Function(Pointer cred, int uv);
+
+typedef _FidoDevMakeCredC = Int32 Function(
+  Pointer dev,
+  Pointer cred,
+  Pointer<Utf8> pin,
+);
+typedef _FidoDevMakeCredDart = int Function(
+  Pointer dev,
+  Pointer cred,
+  Pointer<Utf8> pin,
+);
+
+// Credential result getters
+typedef _FidoCredPtrGetterC = Pointer<Uint8> Function(Pointer cred);
+typedef _FidoCredPtrGetterDart = Pointer<Uint8> Function(Pointer cred);
+
+typedef _FidoCredLenGetterC = Size Function(Pointer cred);
+typedef _FidoCredLenGetterDart = int Function(Pointer cred);
+
+typedef _FidoCredFmtC = Pointer<Utf8> Function(Pointer cred);
+typedef _FidoCredFmtDart = Pointer<Utf8> Function(Pointer cred);
+
+// Assertion
+typedef _FidoAssertNewC = Pointer Function();
+typedef _FidoAssertNewDart = Pointer Function();
+
+typedef _FidoAssertFreeC = Void Function(Pointer<Pointer> assert_);
+typedef _FidoAssertFreeDart = void Function(Pointer<Pointer> assert_);
+
+typedef _FidoAssertSetClientdataHashC = Int32 Function(
+  Pointer assert_,
+  Pointer<Uint8> hash,
+  Size len,
+);
+typedef _FidoAssertSetClientdataHashDart = int Function(
+  Pointer assert_,
+  Pointer<Uint8> hash,
+  int len,
+);
+
+typedef _FidoAssertSetRpC = Int32 Function(
+  Pointer assert_,
+  Pointer<Utf8> rpId,
+);
+typedef _FidoAssertSetRpDart = int Function(
+  Pointer assert_,
+  Pointer<Utf8> rpId,
+);
+
+typedef _FidoAssertSetUvC = Int32 Function(Pointer assert_, Int32 uv);
+typedef _FidoAssertSetUvDart = int Function(Pointer assert_, int uv);
+
+typedef _FidoAssertAllowCredC = Int32 Function(
+  Pointer assert_,
+  Pointer<Uint8> credId,
+  Size len,
+);
+typedef _FidoAssertAllowCredDart = int Function(
+  Pointer assert_,
+  Pointer<Uint8> credId,
+  int len,
+);
+
+typedef _FidoDevGetAssertC = Int32 Function(
+  Pointer dev,
+  Pointer assert_,
+  Pointer<Utf8> pin,
+);
+typedef _FidoDevGetAssertDart = int Function(
+  Pointer dev,
+  Pointer assert_,
+  Pointer<Utf8> pin,
+);
+
+typedef _FidoAssertCountC = Size Function(Pointer assert_);
+typedef _FidoAssertCountDart = int Function(Pointer assert_);
+
+// Assertion result getters (with index)
+typedef _FidoAssertIdxPtrGetterC = Pointer<Uint8> Function(
+  Pointer assert_,
+  Size idx,
+);
+typedef _FidoAssertIdxPtrGetterDart = Pointer<Uint8> Function(
+  Pointer assert_,
+  int idx,
+);
+
+typedef _FidoAssertIdxLenGetterC = Size Function(Pointer assert_, Size idx);
+typedef _FidoAssertIdxLenGetterDart = int Function(Pointer assert_, int idx);
+
+// ── Bindings class ───────────────────────────────────────────────────────────
+
+/// FFI bindings to `libfido2.so` for Linux FIDO2 security key operations.
+///
+/// All function lookups are performed eagerly as `late final` fields, resolved
+/// from a [DynamicLibrary] provided at construction time. The caller is
+/// responsible for loading the dynamic library (e.g. via
+/// `DynamicLibrary.open('libfido2.so')`).
+class LibFido2Bindings {
+  /// Creates bindings from a loaded `libfido2.so` dynamic library.
+  LibFido2Bindings(this._lib);
+
+  final DynamicLibrary _lib;
+
+  // ── Init ─────────────────────────────────────────────────────────────────
+
+  /// Initialize libfido2. Call with `flags = 0`.
+  late final fidoInit =
+      _lib.lookupFunction<_FidoInitC, _FidoInitDart>('fido_init');
+
+  // ── Device info ──────────────────────────────────────────────────────────
+
+  /// Allocate a device info list for up to [n] entries.
+  late final fidoDevInfoNew =
+      _lib.lookupFunction<_FidoDevInfoNewC, _FidoDevInfoNewDart>(
+    'fido_dev_info_new',
+  );
+
+  /// Free a device info list.
+  late final fidoDevInfoFree =
+      _lib.lookupFunction<_FidoDevInfoFreeC, _FidoDevInfoFreeDart>(
+    'fido_dev_info_free',
+  );
+
+  /// Discover connected FIDO2 devices. Returns error code.
+  late final fidoDevInfoManifest =
+      _lib.lookupFunction<_FidoDevInfoManifestC, _FidoDevInfoManifestDart>(
+    'fido_dev_info_manifest',
+  );
+
+  /// Get the device path from a device info entry.
+  late final fidoDevInfoPath =
+      _lib.lookupFunction<_FidoDevInfoPathC, _FidoDevInfoPathDart>(
+    'fido_dev_info_path',
+  );
+
+  /// Get the device info entry at [idx] from the list.
+  late final fidoDevInfoPtr =
+      _lib.lookupFunction<_FidoDevInfoPtrC, _FidoDevInfoPtrDart>(
+    'fido_dev_info_ptr',
+  );
+
+  // ── Device management ────────────────────────────────────────────────────
+
+  /// Allocate a new device handle.
+  late final fidoDevNew =
+      _lib.lookupFunction<_FidoDevNewC, _FidoDevNewDart>('fido_dev_new');
+
+  /// Free a device handle.
+  late final fidoDevFree =
+      _lib.lookupFunction<_FidoDevFreeC, _FidoDevFreeDart>('fido_dev_free');
+
+  /// Open a FIDO2 device at [path]. Returns error code.
+  late final fidoDevOpen =
+      _lib.lookupFunction<_FidoDevOpenC, _FidoDevOpenDart>('fido_dev_open');
+
+  /// Close a FIDO2 device. Returns error code.
+  late final fidoDevClose =
+      _lib.lookupFunction<_FidoDevCloseC, _FidoDevCloseDart>('fido_dev_close');
+
+  // ── Credential creation ──────────────────────────────────────────────────
+
+  /// Allocate a new credential object.
+  late final fidoCredNew =
+      _lib.lookupFunction<_FidoCredNewC, _FidoCredNewDart>('fido_cred_new');
+
+  /// Free a credential object.
+  late final fidoCredFree =
+      _lib.lookupFunction<_FidoCredFreeC, _FidoCredFreeDart>('fido_cred_free');
+
+  /// Set the credential algorithm type (e.g. [coseEs256]).
+  late final fidoCredSetType =
+      _lib.lookupFunction<_FidoCredSetTypeC, _FidoCredSetTypeDart>(
+    'fido_cred_set_type',
+  );
+
+  /// Set the client data hash on the credential.
+  late final fidoCredSetClientdataHash = _lib.lookupFunction<
+      _FidoCredSetClientdataHashC, _FidoCredSetClientdataHashDart>(
+    'fido_cred_set_clientdata_hash',
+  );
+
+  /// Set the relying party ID and name on the credential.
+  late final fidoCredSetRp =
+      _lib.lookupFunction<_FidoCredSetRpC, _FidoCredSetRpDart>(
+    'fido_cred_set_rp',
+  );
+
+  /// Set the user ID, name, display name, and icon on the credential.
+  late final fidoCredSetUser =
+      _lib.lookupFunction<_FidoCredSetUserC, _FidoCredSetUserDart>(
+    'fido_cred_set_user',
+  );
+
+  /// Set the resident key requirement on the credential.
+  late final fidoCredSetRk =
+      _lib.lookupFunction<_FidoCredSetRkC, _FidoCredSetRkDart>(
+    'fido_cred_set_rk',
+  );
+
+  /// Set the user verification requirement on the credential.
+  late final fidoCredSetUv =
+      _lib.lookupFunction<_FidoCredSetUvC, _FidoCredSetUvDart>(
+    'fido_cred_set_uv',
+  );
+
+  /// Perform the credential creation ceremony on a device. Returns error code.
+  late final fidoDevMakeCred =
+      _lib.lookupFunction<_FidoDevMakeCredC, _FidoDevMakeCredDart>(
+    'fido_dev_make_cred',
+  );
+
+  // ── Credential result getters ────────────────────────────────────────────
+
+  /// Pointer to the credential ID bytes.
+  late final fidoCredIdPtr =
+      _lib.lookupFunction<_FidoCredPtrGetterC, _FidoCredPtrGetterDart>(
+    'fido_cred_id_ptr',
+  );
+
+  /// Length of the credential ID in bytes.
+  late final fidoCredIdLen =
+      _lib.lookupFunction<_FidoCredLenGetterC, _FidoCredLenGetterDart>(
+    'fido_cred_id_len',
+  );
+
+  /// Pointer to the authenticator data bytes.
+  late final fidoCredAuthdataPtr =
+      _lib.lookupFunction<_FidoCredPtrGetterC, _FidoCredPtrGetterDart>(
+    'fido_cred_authdata_ptr',
+  );
+
+  /// Length of the authenticator data in bytes.
+  late final fidoCredAuthdataLen =
+      _lib.lookupFunction<_FidoCredLenGetterC, _FidoCredLenGetterDart>(
+    'fido_cred_authdata_len',
+  );
+
+  /// Pointer to the attestation certificate (x5c) bytes.
+  late final fidoCredX5cPtr =
+      _lib.lookupFunction<_FidoCredPtrGetterC, _FidoCredPtrGetterDart>(
+    'fido_cred_x5c_ptr',
+  );
+
+  /// Length of the attestation certificate in bytes.
+  late final fidoCredX5cLen =
+      _lib.lookupFunction<_FidoCredLenGetterC, _FidoCredLenGetterDart>(
+    'fido_cred_x5c_len',
+  );
+
+  /// Pointer to the attestation signature bytes.
+  late final fidoCredSigPtr =
+      _lib.lookupFunction<_FidoCredPtrGetterC, _FidoCredPtrGetterDart>(
+    'fido_cred_sig_ptr',
+  );
+
+  /// Length of the attestation signature in bytes.
+  late final fidoCredSigLen =
+      _lib.lookupFunction<_FidoCredLenGetterC, _FidoCredLenGetterDart>(
+    'fido_cred_sig_len',
+  );
+
+  /// Pointer to the client data hash bytes.
+  late final fidoCredClientdataHashPtr =
+      _lib.lookupFunction<_FidoCredPtrGetterC, _FidoCredPtrGetterDart>(
+    'fido_cred_clientdata_hash_ptr',
+  );
+
+  /// Length of the client data hash in bytes.
+  late final fidoCredClientdataHashLen =
+      _lib.lookupFunction<_FidoCredLenGetterC, _FidoCredLenGetterDart>(
+    'fido_cred_clientdata_hash_len',
+  );
+
+  /// Attestation format string (e.g. "packed", "none").
+  late final fidoCredFmt =
+      _lib.lookupFunction<_FidoCredFmtC, _FidoCredFmtDart>('fido_cred_fmt');
+
+  // ── Assertion ────────────────────────────────────────────────────────────
+
+  /// Allocate a new assertion object.
+  late final fidoAssertNew =
+      _lib.lookupFunction<_FidoAssertNewC, _FidoAssertNewDart>(
+    'fido_assert_new',
+  );
+
+  /// Free an assertion object.
+  late final fidoAssertFree =
+      _lib.lookupFunction<_FidoAssertFreeC, _FidoAssertFreeDart>(
+    'fido_assert_free',
+  );
+
+  /// Set the client data hash on the assertion.
+  late final fidoAssertSetClientdataHash = _lib.lookupFunction<
+      _FidoAssertSetClientdataHashC, _FidoAssertSetClientdataHashDart>(
+    'fido_assert_set_clientdata_hash',
+  );
+
+  /// Set the relying party ID on the assertion.
+  late final fidoAssertSetRp =
+      _lib.lookupFunction<_FidoAssertSetRpC, _FidoAssertSetRpDart>(
+    'fido_assert_set_rp',
+  );
+
+  /// Set the user verification requirement on the assertion.
+  late final fidoAssertSetUv =
+      _lib.lookupFunction<_FidoAssertSetUvC, _FidoAssertSetUvDart>(
+    'fido_assert_set_uv',
+  );
+
+  /// Add an allowed credential ID to the assertion.
+  late final fidoAssertAllowCred =
+      _lib.lookupFunction<_FidoAssertAllowCredC, _FidoAssertAllowCredDart>(
+    'fido_assert_allow_cred',
+  );
+
+  /// Perform the assertion ceremony on a device. Returns error code.
+  late final fidoDevGetAssert =
+      _lib.lookupFunction<_FidoDevGetAssertC, _FidoDevGetAssertDart>(
+    'fido_dev_get_assert',
+  );
+
+  /// Number of assertions returned.
+  late final fidoAssertCount =
+      _lib.lookupFunction<_FidoAssertCountC, _FidoAssertCountDart>(
+    'fido_assert_count',
+  );
+
+  // ── Assertion result getters ─────────────────────────────────────────────
+
+  /// Pointer to the authenticator data bytes for assertion at [idx].
+  late final fidoAssertAuthdataPtr = _lib
+      .lookupFunction<_FidoAssertIdxPtrGetterC, _FidoAssertIdxPtrGetterDart>(
+    'fido_assert_authdata_ptr',
+  );
+
+  /// Length of the authenticator data for assertion at [idx].
+  late final fidoAssertAuthdataLen = _lib
+      .lookupFunction<_FidoAssertIdxLenGetterC, _FidoAssertIdxLenGetterDart>(
+    'fido_assert_authdata_len',
+  );
+
+  /// Pointer to the signature bytes for assertion at [idx].
+  late final fidoAssertSigPtr = _lib
+      .lookupFunction<_FidoAssertIdxPtrGetterC, _FidoAssertIdxPtrGetterDart>(
+    'fido_assert_sig_ptr',
+  );
+
+  /// Length of the signature for assertion at [idx].
+  late final fidoAssertSigLen = _lib
+      .lookupFunction<_FidoAssertIdxLenGetterC, _FidoAssertIdxLenGetterDart>(
+    'fido_assert_sig_len',
+  );
+
+  /// Pointer to the user ID bytes for assertion at [idx].
+  late final fidoAssertUserIdPtr = _lib
+      .lookupFunction<_FidoAssertIdxPtrGetterC, _FidoAssertIdxPtrGetterDart>(
+    'fido_assert_user_id_ptr',
+  );
+
+  /// Length of the user ID for assertion at [idx].
+  late final fidoAssertUserIdLen = _lib
+      .lookupFunction<_FidoAssertIdxLenGetterC, _FidoAssertIdxLenGetterDart>(
+    'fido_assert_user_id_len',
+  );
+
+  /// Pointer to the credential ID bytes for assertion at [idx].
+  late final fidoAssertIdPtr = _lib
+      .lookupFunction<_FidoAssertIdxPtrGetterC, _FidoAssertIdxPtrGetterDart>(
+    'fido_assert_id_ptr',
+  );
+
+  /// Length of the credential ID for assertion at [idx].
+  late final fidoAssertIdLen = _lib
+      .lookupFunction<_FidoAssertIdxLenGetterC, _FidoAssertIdxLenGetterDart>(
+    'fido_assert_id_len',
+  );
+}
