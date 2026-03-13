@@ -9,6 +9,7 @@ import 'package:amplify_authenticator/src/state/inherited_auth_bloc.dart';
 import 'package:amplify_authenticator/src/utils/list.dart';
 import 'package:amplify_authenticator/src/widgets/component.dart';
 import 'package:amplify_authenticator/src/widgets/progress.dart';
+import 'package:amplify_core/amplify_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -180,6 +181,68 @@ class SignInButton extends AuthenticatorElevatedButton {
   @override
   void onPressed(BuildContext context, AuthenticatorState state) =>
       state.signIn();
+}
+
+/// A sign-in button that always uses the password flow, bypassing any
+/// passwordless preference. Used in the "Other sign-in options" view.
+class SignInWithPasswordButton extends AuthenticatorElevatedButton {
+  const SignInWithPasswordButton() : super();
+
+  @override
+  ButtonResolverKey get labelKey => ButtonResolverKey.signIn;
+
+  @override
+  void onPressed(BuildContext context, AuthenticatorState state) =>
+      state.signInWithPassword();
+}
+
+/// Password sign-in button with "Sign in with password" label.
+class SignInWithPasswordLabeledButton extends AuthenticatorElevatedButton {
+  const SignInWithPasswordLabeledButton() : super();
+
+  @override
+  ButtonResolverKey get labelKey => ButtonResolverKey.signInWithPassword;
+
+  @override
+  void onPressed(BuildContext context, AuthenticatorState state) =>
+      state.signInWithPassword();
+}
+
+/// A sign-in button that uses the passkey (passwordless) flow.
+class SignInWithPasskeyButton extends AuthenticatorElevatedButton {
+  const SignInWithPasskeyButton() : super();
+
+  @override
+  ButtonResolverKey get labelKey => ButtonResolverKey.signInWithPasskey;
+
+  @override
+  void onPressed(BuildContext context, AuthenticatorState state) =>
+      state.signIn();
+}
+
+/// A sign-in button for a specific [AuthFactorType] (passwordless).
+class FactorSignInButton extends AuthenticatorElevatedButton {
+  const FactorSignInButton({required this.factor}) : super();
+
+  final AuthFactorType factor;
+
+  @override
+  ButtonResolverKey get labelKey {
+    switch (factor) {
+      case AuthFactorType.webAuthn:
+        return ButtonResolverKey.signInWithPasskey;
+      case AuthFactorType.emailOtp:
+        return ButtonResolverKey.signInWithEmail;
+      case AuthFactorType.smsOtp:
+        return ButtonResolverKey.signInWithSms;
+      default:
+        return ButtonResolverKey.signIn;
+    }
+  }
+
+  @override
+  void onPressed(BuildContext context, AuthenticatorState state) =>
+      state.signInWithFactor(factor);
 }
 
 /// {@category Prebuilt Widgets}
