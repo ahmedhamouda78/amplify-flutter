@@ -46,5 +46,25 @@ dev_dependencies:
   webview_flutter: ^4.0.0
   webview_flutter_wkwebview: ">=3.1.0 <3.18.0"
 
+dependency_overrides:
+  amplify_auth_cognito:
+    path: ../
+  amplify_auth_cognito_dart:
+    path: ../../amplify_auth_cognito_dart
+  amplify_auth_cognito_test:
+    path: ../../amplify_auth_cognito_test
+  amplify_auth_integration_test:
+    path: ../../../test/amplify_auth_integration_test
+  amplify_authenticator:
+    path: ../../../authenticator/amplify_authenticator
+  amplify_core:
+    path: ../../../amplify_core
+  amplify_flutter:
+    path: ../../../../packages/amplify/amplify_flutter
+  amplify_integration_test:
+    path: ../../../test/amplify_integration_test
+  amplify_native_legacy_wrapper:
+    path: ../../../amplify_native_legacy_wrapper
+
 flutter:
   uses-material-design: true

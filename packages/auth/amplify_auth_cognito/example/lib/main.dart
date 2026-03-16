@@ -1,9 +1,9 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_auth_cognito_example/screens/confirm_user_attribute.dart';
+import 'package:amplify_auth_cognito_example/screens/passkey_management.dart';
 import 'package:amplify_auth_cognito_example/screens/update_user_attribute.dart';
 import 'package:amplify_auth_cognito_example/screens/update_user_attributes.dart';
 import 'package:amplify_auth_cognito_example/screens/view_user_attributes.dart';
@@ -12,7 +12,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'amplifyconfiguration.dart';
+import 'amplify_outputs.dart';
 
 final AmplifyLogger _logger = AmplifyLogger('MyApp');
 
@@ -66,6 +66,11 @@ class _MyAppState extends State<MyApp> {
               userAttributeKey: CognitoUserAttributeKey.phoneNumber,
             ),
       ),
+      GoRoute(
+        path: '/passkeys',
+        builder: (BuildContext _, GoRouterState _) =>
+            const PasskeyManagementScreen(),
+      ),
     ],
   );
 
@@ -77,37 +82,16 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _configure() async {
     try {
-      await Amplify.addPlugins([
-        AmplifyAPI(),
+      await Amplify.addPlugin(
         AmplifyAuthCognito(
-          // FIXME: In your app, make sure to remove this line and set up
-          /// Keychain Sharing in Xcode as described in the docs:
-          /// https://docs.amplify.aws/lib/project-setup/platform-setup/q/platform/flutter/#enable-keychain
           secureStorageFactory: AmplifySecureStorage.factoryFrom(
             macOSOptions:
                 // ignore: invalid_use_of_visible_for_testing_member
                 MacOSSecureStorageOptions(useDataProtection: false),
           ),
         ),
-      ]);
-
-      // Uncomment this block, and comment out the one above to change how
-      // credentials are persisted.
-      /*
-      await Amplify.addPlugin(
-          AmplifyAuthCognito(
-             secureStorageFactory: (scope) => AmplifySecureStorage.fromConfig(
-               config: AmplifySecureStorageConfig(
-                 scope: scope.name,
-                 webOptions: WebSecureStorageOptions(
-                   persistenceOption: WebPersistenceOption.inMemory,
-                 ),
-               ),
-             ),
-           ),
-         );
-       */
-      await Amplify.configure(amplifyconfig);
+      );
+      await Amplify.configure(amplifyConfig);
       _logger.debug('Successfully configured Amplify');
 
       Amplify.Hub.listen(HubChannel.Auth, (event) {
@@ -122,6 +106,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Authenticator(
       preferPrivateSession: true,
+      signInForm: SignInForm(),
+      passwordlessSettings: const PasswordlessSettings(
+        passkeyRegistrationPrompts: PasskeyRegistrationPrompts.enabled(),
+      ),
       child: MaterialApp.router(
         title: 'Flutter Demo',
         builder: Authenticator.builder(),
@@ -143,48 +131,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var _greeting = '';
-  var _loading = false;
-  late final _controller = TextEditingController();
+  final _loading = false;
 
   @override
   void initState() {
     super.initState();
-    _fetchAuthSession();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
-  }
-
-  Future<void> _fetchAuthSession() async {
-    final authSession = await Amplify.Auth.fetchAuthSession();
-    _logger.info(prettyPrintJson(authSession.toJson()));
-  }
-
-  Future<void> _requestGreeting() async {
-    setState(() {
-      _loading = true;
-    });
-    try {
-      final response = await Amplify.API
-          .post('/hello', body: HttpPayload.string(_controller.text))
-          .response;
-      final decodedBody = response.decodeBody();
-      setState(() {
-        _greeting = decodedBody;
-      });
-    } on Exception catch (e) {
-      setState(() {
-        _greeting = e.toString();
-      });
-    } finally {
-      setState(() {
-        _loading = false;
-      });
-    }
   }
 
   @override
@@ -195,18 +151,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            if (_loading)
-              const CircularProgressIndicator()
-            else
-              Text(_greeting),
+            if (_loading) const CircularProgressIndicator(),
             const SizedBox(height: 30),
-            TextField(controller: _controller),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _requestGreeting,
-              child: const Text('Request Greeting'),
-            ),
-            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () => context.push('/view-user-attributes'),
               child: const Text('View User Attributes'),
@@ -220,6 +166,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ElevatedButton(
               onPressed: () => context.push('/update-user-attributes'),
               child: const Text('Update User Attributes'),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton.icon(
+              onPressed: () => context.push('/passkeys'),
+              icon: const Icon(Icons.fingerprint),
+              label: const Text('Manage Passkeys'),
             ),
             const SizedBox(height: 30),
             const SignOutButton(),
