@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+// ignore: implementation_imports
+import 'package:amplify_auth_cognito_dart/src/model/webauthn/webauthn_credential_platform.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_integration_test/amplify_integration_test.dart'
     as integ;
@@ -16,8 +18,10 @@ import 'package:flutter_test/flutter_test.dart';
 /// {@endtemplate}
 class AmplifyAuthTestPlugin extends AmplifyAuthCognito {
   /// {@macro amplify_auth_integration_test.amplify_auth_test_plugin}
-  AmplifyAuthTestPlugin({required this.hasApiPlugin})
-    : super(
+  AmplifyAuthTestPlugin({
+    required this.hasApiPlugin,
+    this.webAuthnPlatform,
+  }) : super(
         secureStorageFactory: AmplifySecureStorage.factoryFrom(
           macOSOptions: MacOSSecureStorageOptions(useDataProtection: false),
         ),
@@ -25,6 +29,19 @@ class AmplifyAuthTestPlugin extends AmplifyAuthCognito {
 
   /// Whether there is an API plugin for the configuration.
   final bool hasApiPlugin;
+
+  /// Optional WebAuthn platform for testing.
+  final WebAuthnCredentialPlatform? webAuthnPlatform;
+
+  @override
+  Future<void> addPlugin({
+    required AmplifyAuthProviderRepository authProviderRepo,
+  }) async {
+    await super.addPlugin(authProviderRepo: authProviderRepo);
+    if (webAuthnPlatform != null) {
+      stateMachine.addInstance<WebAuthnCredentialPlatform>(webAuthnPlatform!);
+    }
+  }
 
   @override
   Future<CognitoSignUpResult> signUp({

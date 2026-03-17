@@ -110,6 +110,12 @@ const mfaRequiredUsernameLogin = EnvironmentInfo.withGen2Defaults(
   loginMethod: LoginMethod.username,
 );
 
+/// An environment with WebAuthn/passkey authentication enabled.
+const webAuthnEnvironment = EnvironmentInfo.withGen2Defaults(
+  name: 'webauthn',
+  loginMethod: LoginMethod.email,
+);
+
 /// Environments that support MFA
 const List<EnvironmentInfo> mfaEnvironments = [
   mfaOptionalSms,
