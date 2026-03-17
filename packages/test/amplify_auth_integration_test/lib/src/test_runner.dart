@@ -5,6 +5,8 @@ import 'dart:convert';
 
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+// ignore: implementation_imports
+import 'package:amplify_auth_cognito_dart/src/model/webauthn/webauthn_credential_platform.dart';
 import 'package:amplify_auth_integration_test/src/test_auth_plugin.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_integration_test/amplify_integration_test.dart'
@@ -237,6 +239,7 @@ class AuthTestRunner {
     bool useAmplifyOutputs = false,
     List<APIAuthProvider> apiAuthProviders = const [],
     AWSHttpClient? baseClient,
+    WebAuthnCredentialPlatform? webAuthnPlatform,
   }) async {
     final config = useAmplifyOutputs
         ? _amplifyOutputs[environmentName]!
@@ -247,7 +250,10 @@ class AuthTestRunner {
             jsonDecode(config) as Map<String, dynamic>,
           ).toAmplifyOutputs();
     final hasApiPlugin = outputs.data != null;
-    final authPlugin = AmplifyAuthTestPlugin(hasApiPlugin: hasApiPlugin);
+    final authPlugin = AmplifyAuthTestPlugin(
+      hasApiPlugin: hasApiPlugin,
+      webAuthnPlatform: webAuthnPlatform,
+    );
     await Amplify.addPlugins([
       authPlugin,
       if (hasApiPlugin)
