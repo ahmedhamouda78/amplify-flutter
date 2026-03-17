@@ -31,13 +31,15 @@
 
 ### Phase 1: Passkey e2e integration tests — stub platform bridge, add sign-in and registration test coverage
 
-**Goal:** [To be planned]
-**Requirements**: TBD
-**Depends on:** Phase 0
-**Plans:** 0 plans
+**Goal:** End-to-end integration tests for passkey sign-in and registration flows using a real Cognito backend with a stubbed WebAuthn platform bridge, covering happy paths, error scenarios, first-factor selection, and isPasskeySupported.
+**Requirements**: SIGN-IN-01, SIGN-IN-02, SIGN-IN-03, SIGN-IN-04, REG-01, REG-02, REG-03, REG-04, SELECT-01, SUPPORT-01
+**Depends on:** v1.0 Passkey Support (shipped)
+**Plans:** 3 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 1 to break down)
+- [ ] 01-01-PLAN.md — Test infrastructure: modify AmplifyAuthTestPlugin for WebAuthn injection, add environment, create shared utilities
+- [ ] 01-02-PLAN.md — WebAuthn sign-in tests: happy path, cancel, unsupported, invalid credential, first-factor selection
+- [ ] 01-03-PLAN.md — WebAuthn registration tests: happy path, cancel, unsupported, duplicate, isPasskeySupported
 
 ---
 *Roadmap created: 2026-03-07*
