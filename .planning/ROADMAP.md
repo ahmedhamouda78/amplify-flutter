@@ -37,7 +37,7 @@
 **Plans:** 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Test infrastructure: modify AmplifyAuthTestPlugin for WebAuthn injection, add environment, create shared utilities
+- [x] 01-01-PLAN.md — Test infrastructure: modify AmplifyAuthTestPlugin for WebAuthn injection, add environment, create shared utilities (completed 2026-03-17)
 - [ ] 01-02-PLAN.md — WebAuthn sign-in tests: happy path, cancel, unsupported, invalid credential, first-factor selection
 - [ ] 01-03-PLAN.md — WebAuthn registration tests: happy path, cancel, unsupported, duplicate, isPasskeySupported
 
