@@ -1,16 +1,15 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.0
-milestone_name: Passkey Support
-status: shipped
-stopped_at: Milestone v1.0 complete
-last_updated: "2026-03-11T15:10:00.000Z"
-last_activity: 2026-03-11 -- Milestone v1.0 shipped and archived
+milestone_name: milestone
+status: completed
+stopped_at: Phase 1 context gathered
+last_updated: "2026-03-17T18:37:02.193Z"
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 21
-  completed_plans: 21
+  total_phases: 1
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
   percent: 100
 ---
 
@@ -38,5 +37,5 @@ See: .planning/PROJECT.md (updated 2026-03-11)
 
 ## Last Session
 
-- **Stopped at:** Milestone v1.0 complete
+- **Stopped at:** Phase 1 context gathered
 - **Timestamp:** 2026-03-11T15:10:00Z
