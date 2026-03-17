@@ -11,3 +11,4 @@ export 'src/environments.dart';
 export 'src/test_auth_plugin.dart';
 export 'src/test_runner.dart';
 export 'src/totp_utils.dart';
+export 'src/webauthn_test_utils.dart';
