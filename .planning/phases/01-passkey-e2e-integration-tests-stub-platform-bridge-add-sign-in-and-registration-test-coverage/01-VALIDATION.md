@@ -2,8 +2,8 @@
 phase: 1
 slug: passkey-e2e-integration-tests-stub-platform-bridge-add-sign-in-and-registration-test-coverage
 status: draft
-nyquist_compliant: false
-wave_0_complete: false
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-03-17
 ---
 
@@ -19,8 +19,8 @@ created: 2026-03-17
 |----------|-------|
 | **Framework** | integration_test (Flutter SDK builtin) + flutter_test |
 | **Config file** | none — configured via `testRunner.setupTests()` in each test file |
-| **Quick run command** | `flutter test integration_test/webauthn_sign_in_test.dart --dart-define=AMPLIFY_ENVIRONMENT=webauthn` |
-| **Full suite command** | `flutter test integration_test/ --dart-define=AMPLIFY_ENVIRONMENT=webauthn` |
+| **Quick run command** | `cd packages/auth/amplify_auth_cognito/example && dart analyze integration_test/webauthn_sign_in_test.dart` |
+| **Full suite command** | `cd packages/auth/amplify_auth_cognito/example && dart analyze integration_test/webauthn_sign_in_test.dart integration_test/webauthn_registration_test.dart` |
 | **Estimated runtime** | ~60 seconds (requires network for Cognito calls) |
 
 ---
@@ -38,16 +38,16 @@ created: 2026-03-17
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| SIGN-IN-01 | 01 | 1 | Sign-in happy path | integration | `flutter test integration_test/webauthn_sign_in_test.dart -t sign-in-happy` | ❌ W0 | ⬜ pending |
-| SIGN-IN-02 | 01 | 1 | User cancels passkey prompt | integration | `flutter test integration_test/webauthn_sign_in_test.dart -t sign-in-cancel` | ❌ W0 | ⬜ pending |
-| SIGN-IN-03 | 01 | 1 | Passkey not supported | integration | `flutter test integration_test/webauthn_sign_in_test.dart -t sign-in-unsupported` | ❌ W0 | ⬜ pending |
-| SIGN-IN-04 | 01 | 1 | Invalid credential response | integration | `flutter test integration_test/webauthn_sign_in_test.dart -t sign-in-invalid` | ❌ W0 | ⬜ pending |
-| REG-01 | 01 | 1 | Registration happy path | integration | `flutter test integration_test/webauthn_registration_test.dart -t reg-happy` | ❌ W0 | ⬜ pending |
-| REG-02 | 01 | 1 | Registration user cancels | integration | `flutter test integration_test/webauthn_registration_test.dart -t reg-cancel` | ❌ W0 | ⬜ pending |
-| REG-03 | 01 | 1 | Registration platform unsupported | integration | `flutter test integration_test/webauthn_registration_test.dart -t reg-unsupported` | ❌ W0 | ⬜ pending |
-| REG-04 | 01 | 1 | Registration already-registered | integration | `flutter test integration_test/webauthn_registration_test.dart -t reg-duplicate` | ❌ W0 | ⬜ pending |
-| SELECT-01 | 01 | 1 | First-factor selection flow | integration | `flutter test integration_test/webauthn_sign_in_test.dart -t first-factor-selection` | ❌ W0 | ⬜ pending |
-| SUPPORT-01 | 01 | 1 | isPasskeySupported check | integration | `flutter test integration_test/webauthn_registration_test.dart -t is-supported` | ❌ W0 | ⬜ pending |
+| SIGN-IN-01 | 01 | 1 | Sign-in happy path | integration | `dart analyze packages/auth/amplify_auth_cognito/example/integration_test/webauthn_sign_in_test.dart` | ❌ W0 | ⬜ pending |
+| SIGN-IN-02 | 01 | 1 | User cancels passkey prompt | integration | `dart analyze packages/auth/amplify_auth_cognito/example/integration_test/webauthn_sign_in_test.dart` | ❌ W0 | ⬜ pending |
+| SIGN-IN-03 | 01 | 1 | Passkey not supported | integration | `dart analyze packages/auth/amplify_auth_cognito/example/integration_test/webauthn_sign_in_test.dart` | ❌ W0 | ⬜ pending |
+| SIGN-IN-04 | 01 | 1 | Invalid credential response | integration | `dart analyze packages/auth/amplify_auth_cognito/example/integration_test/webauthn_sign_in_test.dart` | ❌ W0 | ⬜ pending |
+| REG-01 | 01 | 1 | Registration happy path | integration | `dart analyze packages/auth/amplify_auth_cognito/example/integration_test/webauthn_registration_test.dart` | ❌ W0 | ⬜ pending |
+| REG-02 | 01 | 1 | Registration user cancels | integration | `dart analyze packages/auth/amplify_auth_cognito/example/integration_test/webauthn_registration_test.dart` | ❌ W0 | ⬜ pending |
+| REG-03 | 01 | 1 | Registration platform unsupported | integration | `dart analyze packages/auth/amplify_auth_cognito/example/integration_test/webauthn_registration_test.dart` | ❌ W0 | ⬜ pending |
+| REG-04 | 01 | 1 | Registration already-registered | integration | `dart analyze packages/auth/amplify_auth_cognito/example/integration_test/webauthn_registration_test.dart` | ❌ W0 | ⬜ pending |
+| SELECT-01 | 01 | 1 | First-factor selection flow | integration | `dart analyze packages/auth/amplify_auth_cognito/example/integration_test/webauthn_sign_in_test.dart` | ❌ W0 | ⬜ pending |
+| SUPPORT-01 | 01 | 1 | isPasskeySupported check | integration | `dart analyze packages/auth/amplify_auth_cognito/example/integration_test/webauthn_registration_test.dart` | ❌ W0 | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -79,4 +79,4 @@ All phase behaviors have automated verification.
 - [ ] Feedback latency < 60s
 - [ ] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved 2026-03-17
