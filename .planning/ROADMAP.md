@@ -28,6 +28,7 @@
 | 4. macOS/Windows/Linux Bridges | v1.0 | 3/3 | Complete | 2026-03-09 |
 | 5. Credential Management | v1.0 | 3/3 | Complete | 2026-03-10 |
 | 6. Authenticator UI | v1.0 | 3/3 | Complete | 2026-03-10 |
+| 1. Passkey E2E Tests | Post-v1.0 | 3/3 | Complete | 2026-03-17 |
 
 ### Phase 1: Passkey e2e integration tests — stub platform bridge, add sign-in and registration test coverage
 
@@ -38,8 +39,8 @@
 
 Plans:
 - [x] 01-01-PLAN.md — Test infrastructure: modify AmplifyAuthTestPlugin for WebAuthn injection, add environment, create shared utilities (completed 2026-03-17)
-- [ ] 01-02-PLAN.md — WebAuthn sign-in tests: happy path, cancel, unsupported, invalid credential, first-factor selection
-- [ ] 01-03-PLAN.md — WebAuthn registration tests: happy path, cancel, unsupported, duplicate, isPasskeySupported
+- [x] 01-02-PLAN.md — WebAuthn sign-in tests: happy path, cancel, unsupported, invalid credential, first-factor selection (completed 2026-03-17)
+- [x] 01-03-PLAN.md — WebAuthn registration tests: happy path, cancel, unsupported, duplicate, isPasskeySupported (completed 2026-03-17)
 
 ---
 *Roadmap created: 2026-03-07*
