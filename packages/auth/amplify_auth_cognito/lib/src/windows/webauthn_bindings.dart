@@ -55,10 +55,10 @@ typedef WebAuthNGetApiVersionNumberDart = int Function();
 /// `HRESULT WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable(
 ///   BOOL *pbIsUserVerifyingPlatformAuthenticatorAvailable
 /// )`
-typedef WebAuthNIsUserVerifyingPlatformAuthenticatorAvailableNative
-    = Int32 Function(Pointer<Int32> pbIsAvailable);
-typedef WebAuthNIsUserVerifyingPlatformAuthenticatorAvailableDart
-    = int Function(Pointer<Int32> pbIsAvailable);
+typedef WebAuthNIsUserVerifyingPlatformAuthenticatorAvailableNative =
+    Int32 Function(Pointer<Int32> pbIsAvailable);
+typedef WebAuthNIsUserVerifyingPlatformAuthenticatorAvailableDart =
+    int Function(Pointer<Int32> pbIsAvailable);
 
 /// `HRESULT WebAuthNAuthenticatorMakeCredential(
 ///   HWND hWnd,
@@ -69,24 +69,26 @@ typedef WebAuthNIsUserVerifyingPlatformAuthenticatorAvailableDart
 ///   PCWEBAUTHN_AUTHENTICATOR_MAKE_CREDENTIAL_OPTIONS pWebAuthNMakeCredentialOptions,
 ///   PWEBAUTHN_CREDENTIAL_ATTESTATION *ppWebAuthNCredentialAttestation
 /// )`
-typedef WebAuthNAuthenticatorMakeCredentialNative = Int32 Function(
-  IntPtr hWnd,
-  Pointer rpInfo,
-  Pointer userInfo,
-  Pointer pubKeyCredParams,
-  Pointer clientData,
-  Pointer options,
-  Pointer<Pointer> ppResult,
-);
-typedef WebAuthNAuthenticatorMakeCredentialDart = int Function(
-  int hWnd,
-  Pointer rpInfo,
-  Pointer userInfo,
-  Pointer pubKeyCredParams,
-  Pointer clientData,
-  Pointer options,
-  Pointer<Pointer> ppResult,
-);
+typedef WebAuthNAuthenticatorMakeCredentialNative =
+    Int32 Function(
+      IntPtr hWnd,
+      Pointer rpInfo,
+      Pointer userInfo,
+      Pointer pubKeyCredParams,
+      Pointer clientData,
+      Pointer options,
+      Pointer<Pointer> ppResult,
+    );
+typedef WebAuthNAuthenticatorMakeCredentialDart =
+    int Function(
+      int hWnd,
+      Pointer rpInfo,
+      Pointer userInfo,
+      Pointer pubKeyCredParams,
+      Pointer clientData,
+      Pointer options,
+      Pointer<Pointer> ppResult,
+    );
 
 /// `HRESULT WebAuthNGetAssertion(
 ///   HWND hWnd,
@@ -95,30 +97,30 @@ typedef WebAuthNAuthenticatorMakeCredentialDart = int Function(
 ///   PCWEBAUTHN_AUTHENTICATOR_GET_ASSERTION_OPTIONS pWebAuthNGetAssertionOptions,
 ///   PWEBAUTHN_ASSERTION *ppWebAuthNAssertion
 /// )`
-typedef WebAuthNGetAssertionNative = Int32 Function(
-  IntPtr hWnd,
-  Pointer<Utf16> rpId,
-  Pointer clientData,
-  Pointer options,
-  Pointer<Pointer> ppResult,
-);
-typedef WebAuthNGetAssertionDart = int Function(
-  int hWnd,
-  Pointer<Utf16> rpId,
-  Pointer clientData,
-  Pointer options,
-  Pointer<Pointer> ppResult,
-);
+typedef WebAuthNGetAssertionNative =
+    Int32 Function(
+      IntPtr hWnd,
+      Pointer<Utf16> rpId,
+      Pointer clientData,
+      Pointer options,
+      Pointer<Pointer> ppResult,
+    );
+typedef WebAuthNGetAssertionDart =
+    int Function(
+      int hWnd,
+      Pointer<Utf16> rpId,
+      Pointer clientData,
+      Pointer options,
+      Pointer<Pointer> ppResult,
+    );
 
 /// `void WebAuthNFreeCredentialAttestation(
 ///   PWEBAUTHN_CREDENTIAL_ATTESTATION pWebAuthNCredentialAttestation
 /// )`
-typedef WebAuthNFreeCredentialAttestationNative = Void Function(
-  Pointer pAttestation,
-);
-typedef WebAuthNFreeCredentialAttestationDart = void Function(
-  Pointer pAttestation,
-);
+typedef WebAuthNFreeCredentialAttestationNative =
+    Void Function(Pointer pAttestation);
+typedef WebAuthNFreeCredentialAttestationDart =
+    void Function(Pointer pAttestation);
 
 /// `void WebAuthNFreeAssertion(PWEBAUTHN_ASSERTION pWebAuthNAssertion)`
 typedef WebAuthNFreeAssertionNative = Void Function(Pointer pAssertion);
@@ -138,83 +140,73 @@ typedef GetActiveWindowDart = int Function();
 /// {@endtemplate}
 class WebAuthnBindings {
   /// {@macro amplify_auth_cognito.webauthn_bindings}
-  WebAuthnBindings({
-    DynamicLibrary? webauthnLib,
-    DynamicLibrary? user32Lib,
-  })  : _webauthn = webauthnLib ?? DynamicLibrary.open('webauthn.dll'),
-        _user32 = user32Lib ?? DynamicLibrary.open('user32.dll');
+  WebAuthnBindings({DynamicLibrary? webauthnLib, DynamicLibrary? user32Lib})
+    : _webauthn = webauthnLib ?? DynamicLibrary.open('webauthn.dll'),
+      _user32 = user32Lib ?? DynamicLibrary.open('user32.dll');
 
   final DynamicLibrary _webauthn;
   final DynamicLibrary _user32;
 
   /// Returns the API version number supported by the platform.
-  late final WebAuthNGetApiVersionNumberDart getApiVersionNumber =
-      _webauthn.lookupFunction<
-          WebAuthNGetApiVersionNumberNative,
-          WebAuthNGetApiVersionNumberDart>(
-    'WebAuthNGetApiVersionNumber',
-  );
+  late final WebAuthNGetApiVersionNumberDart getApiVersionNumber = _webauthn
+      .lookupFunction<
+        WebAuthNGetApiVersionNumberNative,
+        WebAuthNGetApiVersionNumberDart
+      >('WebAuthNGetApiVersionNumber');
 
   /// Checks whether a user-verifying platform authenticator is available.
   ///
   /// Writes a boolean value (as `Int32`) to the provided pointer.
   /// Returns an HRESULT indicating success or failure.
   late final WebAuthNIsUserVerifyingPlatformAuthenticatorAvailableDart
-      isUserVerifyingPlatformAuthenticatorAvailable =
-      _webauthn.lookupFunction<
-          WebAuthNIsUserVerifyingPlatformAuthenticatorAvailableNative,
-          WebAuthNIsUserVerifyingPlatformAuthenticatorAvailableDart>(
-    'WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable',
-  );
+  isUserVerifyingPlatformAuthenticatorAvailable = _webauthn
+      .lookupFunction<
+        WebAuthNIsUserVerifyingPlatformAuthenticatorAvailableNative,
+        WebAuthNIsUserVerifyingPlatformAuthenticatorAvailableDart
+      >('WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable');
 
   /// Initiates a WebAuthn credential creation (registration) ceremony.
   ///
   /// Returns an HRESULT. On success, `ppResult` points to a
   /// `WEBAUTHN_CREDENTIAL_ATTESTATION` struct that must be freed with
   /// [freeCredentialAttestation].
-  late final WebAuthNAuthenticatorMakeCredentialDart makeCredential =
-      _webauthn.lookupFunction<
-          WebAuthNAuthenticatorMakeCredentialNative,
-          WebAuthNAuthenticatorMakeCredentialDart>(
-    'WebAuthNAuthenticatorMakeCredential',
-  );
+  late final WebAuthNAuthenticatorMakeCredentialDart makeCredential = _webauthn
+      .lookupFunction<
+        WebAuthNAuthenticatorMakeCredentialNative,
+        WebAuthNAuthenticatorMakeCredentialDart
+      >('WebAuthNAuthenticatorMakeCredential');
 
   /// Initiates a WebAuthn assertion (authentication) ceremony.
   ///
   /// Returns an HRESULT. On success, `ppResult` points to a
   /// `WEBAUTHN_ASSERTION` struct that must be freed with [freeAssertion].
-  late final WebAuthNGetAssertionDart getAssertion =
-      _webauthn.lookupFunction<
-          WebAuthNGetAssertionNative,
-          WebAuthNGetAssertionDart>(
-    'WebAuthNGetAssertion',
-  );
+  late final WebAuthNGetAssertionDart getAssertion = _webauthn
+      .lookupFunction<WebAuthNGetAssertionNative, WebAuthNGetAssertionDart>(
+        'WebAuthNGetAssertion',
+      );
 
   /// Frees a `WEBAUTHN_CREDENTIAL_ATTESTATION` struct returned by
   /// [makeCredential].
   late final WebAuthNFreeCredentialAttestationDart freeCredentialAttestation =
       _webauthn.lookupFunction<
-          WebAuthNFreeCredentialAttestationNative,
-          WebAuthNFreeCredentialAttestationDart>(
-    'WebAuthNFreeCredentialAttestation',
-  );
+        WebAuthNFreeCredentialAttestationNative,
+        WebAuthNFreeCredentialAttestationDart
+      >('WebAuthNFreeCredentialAttestation');
 
   /// Frees a `WEBAUTHN_ASSERTION` struct returned by [getAssertion].
-  late final WebAuthNFreeAssertionDart freeAssertion =
-      _webauthn.lookupFunction<
-          WebAuthNFreeAssertionNative,
-          WebAuthNFreeAssertionDart>(
-    'WebAuthNFreeAssertion',
-  );
+  late final WebAuthNFreeAssertionDart freeAssertion = _webauthn
+      .lookupFunction<WebAuthNFreeAssertionNative, WebAuthNFreeAssertionDart>(
+        'WebAuthNFreeAssertion',
+      );
 
   /// Returns the handle to the active window (from `user32.dll`).
   ///
   /// Used to obtain the `HWND` parameter required by
   /// [makeCredential] and [getAssertion].
-  late final GetActiveWindowDart getActiveWindow =
-      _user32.lookupFunction<GetActiveWindowNative, GetActiveWindowDart>(
-    'GetActiveWindow',
-  );
+  late final GetActiveWindowDart getActiveWindow = _user32
+      .lookupFunction<GetActiveWindowNative, GetActiveWindowDart>(
+        'GetActiveWindow',
+      );
 }
 
 // ---------------------------------------------------------------------------

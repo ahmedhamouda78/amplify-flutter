@@ -67,10 +67,15 @@ class _PasskeyManagementScreenState extends State<PasskeyManagementScreen> {
                 if (_error != null)
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: Text(_error!, style: const TextStyle(color: Colors.red)),
+                    child: Text(
+                      _error!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
                   ),
                 if (_credentials.isEmpty)
-                  const Expanded(child: Center(child: Text('No passkeys registered')))
+                  const Expanded(
+                    child: Center(child: Text('No passkeys registered')),
+                  )
                 else
                   Expanded(
                     child: ListView.builder(
@@ -79,8 +84,12 @@ class _PasskeyManagementScreenState extends State<PasskeyManagementScreen> {
                         final c = _credentials[i];
                         return ListTile(
                           leading: const Icon(Icons.fingerprint),
-                          title: Text(c.friendlyName ?? c.credentialId.substring(0, 8)),
-                          subtitle: Text(c.createdAt.toLocal().toString().split('.').first),
+                          title: Text(
+                            c.friendlyName ?? c.credentialId.substring(0, 8),
+                          ),
+                          subtitle: Text(
+                            c.createdAt.toLocal().toString().split('.').first,
+                          ),
                           trailing: IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
                             onPressed: () => _delete(c.credentialId),

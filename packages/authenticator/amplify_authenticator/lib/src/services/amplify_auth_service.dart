@@ -11,7 +11,10 @@ import 'package:collection/collection.dart';
 abstract class AuthService {
   Future<SignInResult> signIn(String username, String password);
 
-  Future<SignInResult> signInPasswordless(String username, {AuthFactorType preferredFactor = AuthFactorType.webAuthn});
+  Future<SignInResult> signInPasswordless(
+    String username, {
+    AuthFactorType preferredFactor = AuthFactorType.webAuthn,
+  });
 
   Future<SignInResult> signInWithProvider(
     AuthProvider provider, {
@@ -108,7 +111,10 @@ class AmplifyAuthService
   }
 
   @override
-  Future<SignInResult> signInPasswordless(String username, {AuthFactorType preferredFactor = AuthFactorType.webAuthn}) async {
+  Future<SignInResult> signInPasswordless(
+    String username, {
+    AuthFactorType preferredFactor = AuthFactorType.webAuthn,
+  }) async {
     final result = await _withUserAgent(
       () => Amplify.Auth.signIn(
         username: username,

@@ -14,9 +14,9 @@ class MockWebAuthnCredentialPlatform implements WebAuthnCredentialPlatform {
     Future<String> Function(String)? createCredential,
     Future<String> Function(String)? getCredential,
     Future<bool> Function()? isPasskeySupported,
-  })  : _createCredential = createCredential,
-        _getCredential = getCredential,
-        _isPasskeySupported = isPasskeySupported;
+  }) : _createCredential = createCredential,
+       _getCredential = getCredential,
+       _isPasskeySupported = isPasskeySupported;
 
   final Future<String> Function(String)? _createCredential;
   final Future<String> Function(String)? _getCredential;

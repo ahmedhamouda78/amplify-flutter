@@ -19,9 +19,9 @@ class MockWebAuthnBindings extends WebAuthnBindings {
     this.mockGetAssertionResult = S_OK,
     this.mockActiveWindow = 1,
   }) : super(
-          webauthnLib: DynamicLibrary.process(),
-          user32Lib: DynamicLibrary.process(),
-        );
+         webauthnLib: DynamicLibrary.process(),
+         user32Lib: DynamicLibrary.process(),
+       );
 
   final int mockApiVersion;
   final bool mockIsAvailable;
@@ -30,17 +30,19 @@ class MockWebAuthnBindings extends WebAuthnBindings {
   final int mockActiveWindow;
 
   @override
-  int Function() get getApiVersionNumber => () => mockApiVersion;
+  int Function() get getApiVersionNumber =>
+      () => mockApiVersion;
 
   @override
-  int Function(Pointer<Int32>) get isUserVerifyingPlatformAuthenticatorAvailable =>
-      (pbIsAvailable) {
-        pbIsAvailable.value = mockIsAvailable ? 1 : 0;
-        return S_OK;
-      };
+  int Function(Pointer<Int32>)
+  get isUserVerifyingPlatformAuthenticatorAvailable => (pbIsAvailable) {
+    pbIsAvailable.value = mockIsAvailable ? 1 : 0;
+    return S_OK;
+  };
 
   @override
-  int Function() get getActiveWindow => () => mockActiveWindow;
+  int Function() get getActiveWindow =>
+      () => mockActiveWindow;
 
   @override
   int Function(
@@ -51,8 +53,17 @@ class MockWebAuthnBindings extends WebAuthnBindings {
     Pointer clientData,
     Pointer options,
     Pointer<Pointer> ppResult,
-  ) get makeCredential => (hWnd, rpInfo, userInfo, pubKeyCredParams, clientData,
-          options, ppResult) {
+  )
+  get makeCredential =>
+      (
+        hWnd,
+        rpInfo,
+        userInfo,
+        pubKeyCredParams,
+        clientData,
+        options,
+        ppResult,
+      ) {
         if (mockMakeCredentialResult == S_OK) {
           // Allocate a mock result struct with JSON response.
           // Structure layout: we write the JSON response at expected offsets.
@@ -82,52 +93,56 @@ class MockWebAuthnBindings extends WebAuthnBindings {
     Pointer clientData,
     Pointer options,
     Pointer<Pointer> ppResult,
-  ) get getAssertion => (hWnd, rpId, clientData, options, ppResult) {
-        if (mockGetAssertionResult == S_OK) {
-          // Allocate a mock result struct with JSON response.
-          final mockStruct = calloc<Uint8>(256);
-          final jsonResponse = '{"id":"mock-assertion-id"}';
-          final jsonBytes = utf8.encode(jsonResponse);
+  )
+  get getAssertion => (hWnd, rpId, clientData, options, ppResult) {
+    if (mockGetAssertionResult == S_OK) {
+      // Allocate a mock result struct with JSON response.
+      final mockStruct = calloc<Uint8>(256);
+      final jsonResponse = '{"id":"mock-assertion-id"}';
+      final jsonBytes = utf8.encode(jsonResponse);
 
-          // Write cbAuthenticationResponseJSON at offset 104 (DWORD = Uint32)
-          (mockStruct + 104).cast<Uint32>().value = jsonBytes.length;
+      // Write cbAuthenticationResponseJSON at offset 104 (DWORD = Uint32)
+      (mockStruct + 104).cast<Uint32>().value = jsonBytes.length;
 
-          // Allocate JSON bytes buffer and write pointer at offset 112
-          final jsonBuffer = calloc<Uint8>(jsonBytes.length);
-          for (var i = 0; i < jsonBytes.length; i++) {
-            (jsonBuffer + i).value = jsonBytes[i];
-          }
-          (mockStruct + 112).cast<Pointer<Uint8>>().value = jsonBuffer;
+      // Allocate JSON bytes buffer and write pointer at offset 112
+      final jsonBuffer = calloc<Uint8>(jsonBytes.length);
+      for (var i = 0; i < jsonBytes.length; i++) {
+        (jsonBuffer + i).value = jsonBytes[i];
+      }
+      (mockStruct + 112).cast<Pointer<Uint8>>().value = jsonBuffer;
 
-          ppResult.value = mockStruct.cast();
-        }
-        return mockGetAssertionResult;
-      };
+      ppResult.value = mockStruct.cast();
+    }
+    return mockGetAssertionResult;
+  };
 
   @override
-  void Function(Pointer) get freeCredentialAttestation =>
-      (pAttestation) {
-        // Free the mock struct and JSON buffer we allocated.
-        if (pAttestation != nullptr) {
-          final pbJson = (pAttestation.cast<Uint8>() + 160).cast<Pointer<Uint8>>().value;
-          if (pbJson != nullptr) {
-            calloc.free(pbJson);
-          }
-          calloc.free(pAttestation);
-        }
-      };
+  void Function(Pointer) get freeCredentialAttestation => (pAttestation) {
+    // Free the mock struct and JSON buffer we allocated.
+    if (pAttestation != nullptr) {
+      final pbJson = (pAttestation.cast<Uint8>() + 160)
+          .cast<Pointer<Uint8>>()
+          .value;
+      if (pbJson != nullptr) {
+        calloc.free(pbJson);
+      }
+      calloc.free(pAttestation);
+    }
+  };
 
   @override
   void Function(Pointer) get freeAssertion => (pAssertion) {
-        // Free the mock struct and JSON buffer we allocated.
-        if (pAssertion != nullptr) {
-          final pbJson = (pAssertion.cast<Uint8>() + 112).cast<Pointer<Uint8>>().value;
-          if (pbJson != nullptr) {
-            calloc.free(pbJson);
-          }
-          calloc.free(pAssertion);
-        }
-      };
+    // Free the mock struct and JSON buffer we allocated.
+    if (pAssertion != nullptr) {
+      final pbJson = (pAssertion.cast<Uint8>() + 112)
+          .cast<Pointer<Uint8>>()
+          .value;
+      if (pbJson != nullptr) {
+        calloc.free(pbJson);
+      }
+      calloc.free(pAssertion);
+    }
+  };
 }
 
 void main() {
@@ -141,28 +156,30 @@ void main() {
       });
 
       test(
-          'returns true when API version >= 4 and authenticator is available',
-          () async {
-        final bindings = MockWebAuthnBindings(
-          mockApiVersion: 4,
-          mockIsAvailable: true,
-        );
-        final platform = WindowsWebAuthnPlatform(bindings: bindings);
+        'returns true when API version >= 4 and authenticator is available',
+        () async {
+          final bindings = MockWebAuthnBindings(
+            mockApiVersion: 4,
+            mockIsAvailable: true,
+          );
+          final platform = WindowsWebAuthnPlatform(bindings: bindings);
 
-        expect(await platform.isPasskeySupported(), isTrue);
-      });
+          expect(await platform.isPasskeySupported(), isTrue);
+        },
+      );
 
       test(
-          'returns false when API version >= 4 but authenticator is unavailable',
-          () async {
-        final bindings = MockWebAuthnBindings(
-          mockApiVersion: 4,
-          mockIsAvailable: false,
-        );
-        final platform = WindowsWebAuthnPlatform(bindings: bindings);
+        'returns false when API version >= 4 but authenticator is unavailable',
+        () async {
+          final bindings = MockWebAuthnBindings(
+            mockApiVersion: 4,
+            mockIsAvailable: false,
+          );
+          final platform = WindowsWebAuthnPlatform(bindings: bindings);
 
-        expect(await platform.isPasskeySupported(), isFalse);
-      });
+          expect(await platform.isPasskeySupported(), isFalse);
+        },
+      );
 
       test('returns false on exception', () async {
         // Create bindings that will throw when querying availability
@@ -191,8 +208,7 @@ void main() {
         expect(result, contains('mock-credential-id'));
       });
 
-      test('throws PasskeyCancelledException for NTE_USER_CANCELLED',
-          () async {
+      test('throws PasskeyCancelledException for NTE_USER_CANCELLED', () async {
         final bindings = MockWebAuthnBindings(
           mockApiVersion: 4,
           mockMakeCredentialResult: NTE_USER_CANCELLED,
@@ -215,15 +231,15 @@ void main() {
       });
 
       test(
-          'throws PasskeyRegistrationFailedException for NTE_INVALID_PARAMETER',
-          () async {
-        final bindings = MockWebAuthnBindings(
-          mockApiVersion: 4,
-          mockMakeCredentialResult: NTE_INVALID_PARAMETER,
-        );
-        final platform = WindowsWebAuthnPlatform(bindings: bindings);
+        'throws PasskeyRegistrationFailedException for NTE_INVALID_PARAMETER',
+        () async {
+          final bindings = MockWebAuthnBindings(
+            mockApiVersion: 4,
+            mockMakeCredentialResult: NTE_INVALID_PARAMETER,
+          );
+          final platform = WindowsWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rp": {"id": "example.com", "name": "Example"},
   "user": {"id": "user123", "name": "testuser", "displayName": "Test User"},
@@ -232,21 +248,23 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.createCredential(optionsJson),
-          throwsA(isA<PasskeyRegistrationFailedException>()),
-        );
-      });
+          expect(
+            () => platform.createCredential(optionsJson),
+            throwsA(isA<PasskeyRegistrationFailedException>()),
+          );
+        },
+      );
 
-      test('throws PasskeyRegistrationFailedException for unknown HRESULT',
-          () async {
-        final bindings = MockWebAuthnBindings(
-          mockApiVersion: 4,
-          mockMakeCredentialResult: 0x80004005, // E_FAIL
-        );
-        final platform = WindowsWebAuthnPlatform(bindings: bindings);
+      test(
+        'throws PasskeyRegistrationFailedException for unknown HRESULT',
+        () async {
+          final bindings = MockWebAuthnBindings(
+            mockApiVersion: 4,
+            mockMakeCredentialResult: 0x80004005, // E_FAIL
+          );
+          final platform = WindowsWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rp": {"id": "example.com", "name": "Example"},
   "user": {"id": "user123", "name": "testuser", "displayName": "Test User"},
@@ -255,18 +273,20 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.createCredential(optionsJson),
-          throwsA(isA<PasskeyRegistrationFailedException>()),
-        );
-      });
+          expect(
+            () => platform.createCredential(optionsJson),
+            throwsA(isA<PasskeyRegistrationFailedException>()),
+          );
+        },
+      );
 
-      test('throws PasskeyNotSupportedException when API version < 4',
-          () async {
-        final bindings = MockWebAuthnBindings(mockApiVersion: 3);
-        final platform = WindowsWebAuthnPlatform(bindings: bindings);
+      test(
+        'throws PasskeyNotSupportedException when API version < 4',
+        () async {
+          final bindings = MockWebAuthnBindings(mockApiVersion: 3);
+          final platform = WindowsWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rp": {"id": "example.com", "name": "Example"},
   "user": {"id": "user123", "name": "testuser", "displayName": "Test User"},
@@ -275,21 +295,23 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.createCredential(optionsJson),
-          throwsA(isA<PasskeyNotSupportedException>()),
-        );
-      });
+          expect(
+            () => platform.createCredential(optionsJson),
+            throwsA(isA<PasskeyNotSupportedException>()),
+          );
+        },
+      );
 
-      test('throws PasskeyRegistrationFailedException when no active window',
-          () async {
-        final bindings = MockWebAuthnBindings(
-          mockApiVersion: 4,
-          mockActiveWindow: 0,
-        );
-        final platform = WindowsWebAuthnPlatform(bindings: bindings);
+      test(
+        'throws PasskeyRegistrationFailedException when no active window',
+        () async {
+          final bindings = MockWebAuthnBindings(
+            mockApiVersion: 4,
+            mockActiveWindow: 0,
+          );
+          final platform = WindowsWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rp": {"id": "example.com", "name": "Example"},
   "user": {"id": "user123", "name": "testuser", "displayName": "Test User"},
@@ -298,11 +320,12 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.createCredential(optionsJson),
-          throwsA(isA<PasskeyRegistrationFailedException>()),
-        );
-      });
+          expect(
+            () => platform.createCredential(optionsJson),
+            throwsA(isA<PasskeyRegistrationFailedException>()),
+          );
+        },
+      );
     });
 
     group('getCredential', () {
@@ -322,8 +345,7 @@ void main() {
         expect(result, contains('mock-assertion-id'));
       });
 
-      test('throws PasskeyCancelledException for NTE_USER_CANCELLED',
-          () async {
+      test('throws PasskeyCancelledException for NTE_USER_CANCELLED', () async {
         final bindings = MockWebAuthnBindings(
           mockApiVersion: 4,
           mockGetAssertionResult: NTE_USER_CANCELLED,
@@ -344,15 +366,16 @@ void main() {
         );
       });
 
-      test('throws PasskeyAssertionFailedException for NTE_NOT_FOUND',
-          () async {
-        final bindings = MockWebAuthnBindings(
-          mockApiVersion: 4,
-          mockGetAssertionResult: NTE_NOT_FOUND,
-        );
-        final platform = WindowsWebAuthnPlatform(bindings: bindings);
+      test(
+        'throws PasskeyAssertionFailedException for NTE_NOT_FOUND',
+        () async {
+          final bindings = MockWebAuthnBindings(
+            mockApiVersion: 4,
+            mockGetAssertionResult: NTE_NOT_FOUND,
+          );
+          final platform = WindowsWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rpId": "example.com",
   "challenge": "Y2hhbGxlbmdl",
@@ -360,21 +383,23 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.getCredential(optionsJson),
-          throwsA(isA<PasskeyAssertionFailedException>()),
-        );
-      });
+          expect(
+            () => platform.getCredential(optionsJson),
+            throwsA(isA<PasskeyAssertionFailedException>()),
+          );
+        },
+      );
 
-      test('throws PasskeyAssertionFailedException for NTE_INVALID_PARAMETER',
-          () async {
-        final bindings = MockWebAuthnBindings(
-          mockApiVersion: 4,
-          mockGetAssertionResult: NTE_INVALID_PARAMETER,
-        );
-        final platform = WindowsWebAuthnPlatform(bindings: bindings);
+      test(
+        'throws PasskeyAssertionFailedException for NTE_INVALID_PARAMETER',
+        () async {
+          final bindings = MockWebAuthnBindings(
+            mockApiVersion: 4,
+            mockGetAssertionResult: NTE_INVALID_PARAMETER,
+          );
+          final platform = WindowsWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rpId": "example.com",
   "challenge": "Y2hhbGxlbmdl",
@@ -382,21 +407,23 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.getCredential(optionsJson),
-          throwsA(isA<PasskeyAssertionFailedException>()),
-        );
-      });
+          expect(
+            () => platform.getCredential(optionsJson),
+            throwsA(isA<PasskeyAssertionFailedException>()),
+          );
+        },
+      );
 
-      test('throws PasskeyAssertionFailedException for unknown HRESULT',
-          () async {
-        final bindings = MockWebAuthnBindings(
-          mockApiVersion: 4,
-          mockGetAssertionResult: 0x80004005, // E_FAIL
-        );
-        final platform = WindowsWebAuthnPlatform(bindings: bindings);
+      test(
+        'throws PasskeyAssertionFailedException for unknown HRESULT',
+        () async {
+          final bindings = MockWebAuthnBindings(
+            mockApiVersion: 4,
+            mockGetAssertionResult: 0x80004005, // E_FAIL
+          );
+          final platform = WindowsWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rpId": "example.com",
   "challenge": "Y2hhbGxlbmdl",
@@ -404,18 +431,20 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.getCredential(optionsJson),
-          throwsA(isA<PasskeyAssertionFailedException>()),
-        );
-      });
+          expect(
+            () => platform.getCredential(optionsJson),
+            throwsA(isA<PasskeyAssertionFailedException>()),
+          );
+        },
+      );
 
-      test('throws PasskeyNotSupportedException when API version < 4',
-          () async {
-        final bindings = MockWebAuthnBindings(mockApiVersion: 3);
-        final platform = WindowsWebAuthnPlatform(bindings: bindings);
+      test(
+        'throws PasskeyNotSupportedException when API version < 4',
+        () async {
+          final bindings = MockWebAuthnBindings(mockApiVersion: 3);
+          final platform = WindowsWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rpId": "example.com",
   "challenge": "Y2hhbGxlbmdl",
@@ -423,21 +452,23 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.getCredential(optionsJson),
-          throwsA(isA<PasskeyNotSupportedException>()),
-        );
-      });
+          expect(
+            () => platform.getCredential(optionsJson),
+            throwsA(isA<PasskeyNotSupportedException>()),
+          );
+        },
+      );
 
-      test('throws PasskeyAssertionFailedException when no active window',
-          () async {
-        final bindings = MockWebAuthnBindings(
-          mockApiVersion: 4,
-          mockActiveWindow: 0,
-        );
-        final platform = WindowsWebAuthnPlatform(bindings: bindings);
+      test(
+        'throws PasskeyAssertionFailedException when no active window',
+        () async {
+          final bindings = MockWebAuthnBindings(
+            mockApiVersion: 4,
+            mockActiveWindow: 0,
+          );
+          final platform = WindowsWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rpId": "example.com",
   "challenge": "Y2hhbGxlbmdl",
@@ -445,11 +476,12 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.getCredential(optionsJson),
-          throwsA(isA<PasskeyAssertionFailedException>()),
-        );
-      });
+          expect(
+            () => platform.getCredential(optionsJson),
+            throwsA(isA<PasskeyAssertionFailedException>()),
+          );
+        },
+      );
     });
   });
 }
@@ -457,11 +489,12 @@ void main() {
 /// Mock bindings that throw an exception when queried.
 class _ThrowingMockBindings extends WebAuthnBindings {
   _ThrowingMockBindings()
-      : super(
-          webauthnLib: DynamicLibrary.process(),
-          user32Lib: DynamicLibrary.process(),
-        );
+    : super(
+        webauthnLib: DynamicLibrary.process(),
+        user32Lib: DynamicLibrary.process(),
+      );
 
   @override
-  int Function() get getApiVersionNumber => () => throw Exception('Test error');
+  int Function() get getApiVersionNumber =>
+      () => throw Exception('Test error');
 }

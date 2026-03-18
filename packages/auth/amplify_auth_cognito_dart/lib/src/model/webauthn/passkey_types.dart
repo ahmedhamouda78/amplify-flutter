@@ -43,10 +43,7 @@ class PasskeyCredentialDescriptor {
 
   /// Serializes this descriptor to a JSON map.
   Map<String, dynamic> toJson() {
-    final json = <String, dynamic>{
-      'id': id,
-      'type': type,
-    };
+    final json = <String, dynamic>{'id': id, 'type': type};
     if (transports != null) {
       json['transports'] = transports;
     }
@@ -59,10 +56,7 @@ class PasskeyCredentialDescriptor {
 /// {@endtemplate}
 class PasskeyRpEntity {
   /// {@macro amplify_auth_cognito_dart.passkey_rp_entity}
-  const PasskeyRpEntity({
-    required this.id,
-    required this.name,
-  });
+  const PasskeyRpEntity({required this.id, required this.name});
 
   /// Creates a [PasskeyRpEntity] from a JSON map.
   factory PasskeyRpEntity.fromJson(Map<String, dynamic> json) {
@@ -79,10 +73,7 @@ class PasskeyRpEntity {
   final String name;
 
   /// Serializes this entity to a JSON map.
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-      };
+  Map<String, dynamic> toJson() => {'id': id, 'name': name};
 }
 
 /// {@template amplify_auth_cognito_dart.passkey_user_entity}
@@ -116,10 +107,10 @@ class PasskeyUserEntity {
 
   /// Serializes this entity to a JSON map.
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'displayName': displayName,
-      };
+    'id': id,
+    'name': name,
+    'displayName': displayName,
+  };
 }
 
 /// {@template amplify_auth_cognito_dart.passkey_authenticator_selection}
@@ -184,10 +175,7 @@ class PasskeyAuthenticatorSelection {
 /// {@endtemplate}
 class PasskeyPubKeyCredParam {
   /// {@macro amplify_auth_cognito_dart.passkey_pub_key_cred_param}
-  const PasskeyPubKeyCredParam({
-    required this.type,
-    required this.alg,
-  });
+  const PasskeyPubKeyCredParam({required this.type, required this.alg});
 
   /// Creates a [PasskeyPubKeyCredParam] from a JSON map.
   factory PasskeyPubKeyCredParam.fromJson(Map<String, dynamic> json) {
@@ -204,10 +192,7 @@ class PasskeyPubKeyCredParam {
   final int alg;
 
   /// Serializes this parameter to a JSON map.
-  Map<String, dynamic> toJson() => {
-        'type': type,
-        'alg': alg,
-      };
+  Map<String, dynamic> toJson() => {'type': type, 'alg': alg};
 }
 
 /// {@template amplify_auth_cognito_dart.passkey_create_options}
@@ -233,12 +218,8 @@ class PasskeyCreateOptions {
   factory PasskeyCreateOptions.fromJson(Map<String, dynamic> json) {
     return PasskeyCreateOptions(
       challenge: json['challenge'] as String,
-      rp: PasskeyRpEntity.fromJson(
-        json['rp'] as Map<String, dynamic>,
-      ),
-      user: PasskeyUserEntity.fromJson(
-        json['user'] as Map<String, dynamic>,
-      ),
+      rp: PasskeyRpEntity.fromJson(json['rp'] as Map<String, dynamic>),
+      user: PasskeyUserEntity.fromJson(json['user'] as Map<String, dynamic>),
       pubKeyCredParams: (json['pubKeyCredParams'] as List<dynamic>)
           .map(
             (e) => PasskeyPubKeyCredParam.fromJson(e as Map<String, dynamic>),
@@ -251,12 +232,11 @@ class PasskeyCreateOptions {
                 PasskeyCredentialDescriptor.fromJson(e as Map<String, dynamic>),
           )
           .toList(),
-      authenticatorSelection:
-          json['authenticatorSelection'] == null
-              ? null
-              : PasskeyAuthenticatorSelection.fromJson(
-                  json['authenticatorSelection'] as Map<String, dynamic>,
-                ),
+      authenticatorSelection: json['authenticatorSelection'] == null
+          ? null
+          : PasskeyAuthenticatorSelection.fromJson(
+              json['authenticatorSelection'] as Map<String, dynamic>,
+            ),
       attestation: json['attestation'] as String?,
     );
   }
@@ -298,8 +278,9 @@ class PasskeyCreateOptions {
       json['timeout'] = timeout;
     }
     if (excludeCredentials != null) {
-      json['excludeCredentials'] =
-          excludeCredentials!.map((e) => e.toJson()).toList();
+      json['excludeCredentials'] = excludeCredentials!
+          .map((e) => e.toJson())
+          .toList();
     }
     if (authenticatorSelection != null) {
       json['authenticatorSelection'] = authenticatorSelection!.toJson();
@@ -495,16 +476,14 @@ class PasskeyGetOptions {
 
   /// Serializes these options to a JSON map.
   Map<String, dynamic> toJson() {
-    final json = <String, dynamic>{
-      'challenge': challenge,
-      'rpId': rpId,
-    };
+    final json = <String, dynamic>{'challenge': challenge, 'rpId': rpId};
     if (timeout != null) {
       json['timeout'] = timeout;
     }
     if (allowCredentials != null) {
-      json['allowCredentials'] =
-          allowCredentials!.map((e) => e.toJson()).toList();
+      json['allowCredentials'] = allowCredentials!
+          .map((e) => e.toJson())
+          .toList();
     }
     if (userVerification != null) {
       json['userVerification'] = userVerification;

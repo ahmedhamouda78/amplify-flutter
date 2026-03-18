@@ -53,7 +53,10 @@ void main() {
           );
           stateMachine.addInstance<WebAuthnCredentialPlatform>(mockPlatform);
 
-          await plugin.configure(config: mockConfig, authProviderRepo: testAuthRepo);
+          await plugin.configure(
+            config: mockConfig,
+            authProviderRepo: testAuthRepo,
+          );
 
           // Act
           final result = await plugin.isPasskeySupported();
@@ -65,7 +68,10 @@ void main() {
 
       test('returns false when platform bridge unavailable', () async {
         // Arrange: don't inject platform (null)
-        await plugin.configure(config: mockConfig, authProviderRepo: testAuthRepo);
+        await plugin.configure(
+          config: mockConfig,
+          authProviderRepo: testAuthRepo,
+        );
 
         // Act
         final result = await plugin.isPasskeySupported();
@@ -81,7 +87,10 @@ void main() {
         );
         stateMachine.addInstance<WebAuthnCredentialPlatform>(mockPlatform);
 
-        await plugin.configure(config: mockConfig, authProviderRepo: testAuthRepo);
+        await plugin.configure(
+          config: mockConfig,
+          authProviderRepo: testAuthRepo,
+        );
 
         // Act
         final result = await plugin.isPasskeySupported();

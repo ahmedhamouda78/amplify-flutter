@@ -70,12 +70,14 @@ void main() {
   });
 
   group('PasskeyRegistrationPrompts', () {
-    test('default constructor enables prompts after both sign-in and sign-up',
-        () {
-      const prompts = PasskeyRegistrationPrompts();
-      expect(prompts.isEnabledAfterSignIn, isTrue);
-      expect(prompts.isEnabledAfterSignUp, isTrue);
-    });
+    test(
+      'default constructor enables prompts after both sign-in and sign-up',
+      () {
+        const prompts = PasskeyRegistrationPrompts();
+        expect(prompts.isEnabledAfterSignIn, isTrue);
+        expect(prompts.isEnabledAfterSignUp, isTrue);
+      },
+    );
 
     test('enabled constructor enables all prompts', () {
       const prompts = PasskeyRegistrationPrompts.enabled();
@@ -116,10 +118,7 @@ void main() {
         passkeyRegistrationPrompts: PasskeyRegistrationPrompts.enabled(),
       );
       expect(settings.passkeyRegistrationPrompts, isNotNull);
-      expect(
-        settings.passkeyRegistrationPrompts!.isEnabledAfterSignIn,
-        isTrue,
-      );
+      expect(settings.passkeyRegistrationPrompts!.isEnabledAfterSignIn, isTrue);
     });
 
     test('accepts all configuration options together', () {

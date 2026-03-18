@@ -54,7 +54,10 @@ void main() {
     group('listWebAuthnCredentials', () {
       test('throws when signed out', () async {
         // Arrange: configure plugin but don't seed storage
-        await plugin.configure(config: mockConfig, authProviderRepo: testAuthRepo);
+        await plugin.configure(
+          config: mockConfig,
+          authProviderRepo: testAuthRepo,
+        );
 
         // Act & Assert
         expect(
@@ -93,7 +96,10 @@ void main() {
         });
         stateMachine.addInstance<AWSHttpClient>(mockHttpClient);
 
-        await plugin.configure(config: mockConfig, authProviderRepo: testAuthRepo);
+        await plugin.configure(
+          config: mockConfig,
+          authProviderRepo: testAuthRepo,
+        );
 
         // Act
         final credentials = await plugin.listWebAuthnCredentials();
@@ -103,7 +109,10 @@ void main() {
         final credential = credentials.first;
         expect(credential.credentialId, 'cred-1');
         expect(credential.relyingPartyId, 'test.example.com');
-        expect(credential.createdAt, DateTime.fromMillisecondsSinceEpoch(1710000000000, isUtc: true));
+        expect(
+          credential.createdAt,
+          DateTime.fromMillisecondsSinceEpoch(1710000000000, isUtc: true),
+        );
         expect(credential.friendlyName, 'My Passkey');
         expect(credential.authenticatorAttachment, 'platform');
         expect(credential.authenticatorTransports, ['internal']);
@@ -120,7 +129,9 @@ void main() {
         var callCount = 0;
         // Mock HTTP client with pagination
         final mockHttpClient = MockAWSHttpClient((request, isCancelled) async {
-          final bodyMap = json.decode(utf8.decode(request.bodyBytes)) as Map<String, dynamic>;
+          final bodyMap =
+              json.decode(utf8.decode(request.bodyBytes))
+                  as Map<String, dynamic>;
           callCount++;
 
           if (callCount == 1) {
@@ -160,7 +171,10 @@ void main() {
         });
         stateMachine.addInstance<AWSHttpClient>(mockHttpClient);
 
-        await plugin.configure(config: mockConfig, authProviderRepo: testAuthRepo);
+        await plugin.configure(
+          config: mockConfig,
+          authProviderRepo: testAuthRepo,
+        );
 
         // Act
         final credentials = await plugin.listWebAuthnCredentials();
@@ -182,10 +196,7 @@ void main() {
 
         // Mock HTTP client returning empty credentials
         final mockHttpClient = MockAWSHttpClient((request, isCancelled) async {
-          final responseBody = {
-            'Credentials': <dynamic>[],
-            'NextToken': null,
-          };
+          final responseBody = {'Credentials': <dynamic>[], 'NextToken': null};
           return AWSHttpResponse(
             statusCode: 200,
             body: utf8.encode(json.encode(responseBody)),
@@ -193,7 +204,10 @@ void main() {
         });
         stateMachine.addInstance<AWSHttpClient>(mockHttpClient);
 
-        await plugin.configure(config: mockConfig, authProviderRepo: testAuthRepo);
+        await plugin.configure(
+          config: mockConfig,
+          authProviderRepo: testAuthRepo,
+        );
 
         // Act
         final credentials = await plugin.listWebAuthnCredentials();

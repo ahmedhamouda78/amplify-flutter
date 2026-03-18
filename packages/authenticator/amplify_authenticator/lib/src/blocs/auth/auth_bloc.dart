@@ -408,7 +408,10 @@ class StateMachineBloc
         final result = await _authService.signIn(data.username, data.password);
         await _processSignInResult(result, isSocialSignIn: false);
       } else if (data is AuthPasswordlessSignInData) {
-        final result = await _authService.signInPasswordless(data.username, preferredFactor: data.preferredFactor);
+        final result = await _authService.signInPasswordless(
+          data.username,
+          preferredFactor: data.preferredFactor,
+        );
         await _processSignInResult(result, isSocialSignIn: false);
       } else if (data is AuthSocialSignInData) {
         await _authService

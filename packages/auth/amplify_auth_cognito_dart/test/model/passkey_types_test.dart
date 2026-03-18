@@ -77,10 +77,7 @@ void main() {
       expect(result.id, 'credential-id-base64url');
       expect(result.type, 'public-key');
       expect(result.response.clientDataJSON, 'client-data-base64url');
-      expect(
-        result.response.attestationObject,
-        'attestation-object-base64url',
-      );
+      expect(result.response.attestationObject, 'attestation-object-base64url');
 
       final serialized = result.toJson();
       expect(serialized['id'], 'credential-id-base64url');
@@ -135,7 +132,10 @@ void main() {
       final serialized = result.toJson();
       expect(serialized['id'], 'credential-id-base64url');
       expect(serialized['type'], 'public-key');
-      expect((serialized['response'] as Map)['signature'], 'signature-base64url');
+      expect(
+        (serialized['response'] as Map)['signature'],
+        'signature-base64url',
+      );
     });
   });
 }

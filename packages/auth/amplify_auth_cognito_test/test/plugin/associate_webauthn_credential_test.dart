@@ -55,7 +55,10 @@ void main() {
     group('associateWebAuthnCredential', () {
       test('throws when signed out', () async {
         // Arrange: configure plugin but don't seed storage (no authenticated user)
-        await plugin.configure(config: mockConfig, authProviderRepo: testAuthRepo);
+        await plugin.configure(
+          config: mockConfig,
+          authProviderRepo: testAuthRepo,
+        );
 
         // Act & Assert
         expect(
@@ -77,7 +80,8 @@ void main() {
           final target = request.headers['X-Amz-Target'];
           json.decode(utf8.decode(request.bodyBytes)) as Map<String, dynamic>;
 
-          if (target == 'AWSCognitoIdentityProviderService.StartWebAuthnRegistration') {
+          if (target ==
+              'AWSCognitoIdentityProviderService.StartWebAuthnRegistration') {
             // Return StartWebAuthnRegistration response with creation options
             final responseBody = {
               'CredentialCreationOptions': {
@@ -99,12 +103,10 @@ void main() {
               statusCode: 200,
               body: utf8.encode(json.encode(responseBody)),
             );
-          } else if (target == 'AWSCognitoIdentityProviderService.CompleteWebAuthnRegistration') {
+          } else if (target ==
+              'AWSCognitoIdentityProviderService.CompleteWebAuthnRegistration') {
             // Return success (empty body)
-            return AWSHttpResponse(
-              statusCode: 200,
-              body: utf8.encode('{}'),
-            );
+            return AWSHttpResponse(statusCode: 200, body: utf8.encode('{}'));
           }
           throw UnimplementedError('Unexpected target: $target');
         });
@@ -129,64 +131,66 @@ void main() {
         );
         stateMachine.addInstance<WebAuthnCredentialPlatform>(mockPlatform);
 
-        await plugin.configure(config: mockConfig, authProviderRepo: testAuthRepo);
+        await plugin.configure(
+          config: mockConfig,
+          authProviderRepo: testAuthRepo,
+        );
 
         // Act & Assert: should complete without exception
         await plugin.associateWebAuthnCredential();
       });
 
-      test(
-        'propagates PasskeyCancelledException from platform',
-        () async {
-          // Arrange: seed storage for authenticated state
-          seedStorage(
-            secureStorage,
-            userPoolKeys: userPoolKeys,
-            identityPoolKeys: identityPoolKeys,
-          );
+      test('propagates PasskeyCancelledException from platform', () async {
+        // Arrange: seed storage for authenticated state
+        seedStorage(
+          secureStorage,
+          userPoolKeys: userPoolKeys,
+          identityPoolKeys: identityPoolKeys,
+        );
 
-          // Mock HTTP client for StartWebAuthnRegistration
-          final mockHttpClient = MockAWSHttpClient((request, isCancelled) async {
-            final responseBody = {
-              'CredentialCreationOptions': {
-                'challenge': 'Y2hhbGxlbmdl',
-                'rp': {'id': 'test.example.com', 'name': 'Test'},
-                'user': {
-                  'id': 'dXNlcjE',
-                  'name': 'testuser',
-                  'displayName': 'Test User',
-                },
-                'pubKeyCredParams': [
-                  {'type': 'public-key', 'alg': -7},
-                ],
-                'timeout': 60000,
-                'attestation': 'none',
+        // Mock HTTP client for StartWebAuthnRegistration
+        final mockHttpClient = MockAWSHttpClient((request, isCancelled) async {
+          final responseBody = {
+            'CredentialCreationOptions': {
+              'challenge': 'Y2hhbGxlbmdl',
+              'rp': {'id': 'test.example.com', 'name': 'Test'},
+              'user': {
+                'id': 'dXNlcjE',
+                'name': 'testuser',
+                'displayName': 'Test User',
               },
-            };
-            return AWSHttpResponse(
-              statusCode: 200,
-              body: utf8.encode(json.encode(responseBody)),
-            );
-          });
-          stateMachine.addInstance<AWSHttpClient>(mockHttpClient);
-
-          // Mock platform that throws cancelled exception
-          final mockPlatform = MockWebAuthnCredentialPlatform(
-            createCredential: (_) async => throw const PasskeyCancelledException(
-              'User cancelled',
-            ),
+              'pubKeyCredParams': [
+                {'type': 'public-key', 'alg': -7},
+              ],
+              'timeout': 60000,
+              'attestation': 'none',
+            },
+          };
+          return AWSHttpResponse(
+            statusCode: 200,
+            body: utf8.encode(json.encode(responseBody)),
           );
-          stateMachine.addInstance<WebAuthnCredentialPlatform>(mockPlatform);
+        });
+        stateMachine.addInstance<AWSHttpClient>(mockHttpClient);
 
-          await plugin.configure(config: mockConfig, authProviderRepo: testAuthRepo);
+        // Mock platform that throws cancelled exception
+        final mockPlatform = MockWebAuthnCredentialPlatform(
+          createCredential: (_) async =>
+              throw const PasskeyCancelledException('User cancelled'),
+        );
+        stateMachine.addInstance<WebAuthnCredentialPlatform>(mockPlatform);
 
-          // Act & Assert: exception should propagate
-          expect(
-            () => plugin.associateWebAuthnCredential(),
-            throwsA(isA<PasskeyCancelledException>()),
-          );
-        },
-      );
+        await plugin.configure(
+          config: mockConfig,
+          authProviderRepo: testAuthRepo,
+        );
+
+        // Act & Assert: exception should propagate
+        expect(
+          () => plugin.associateWebAuthnCredential(),
+          throwsA(isA<PasskeyCancelledException>()),
+        );
+      });
 
       test('propagates platform not supported error', () async {
         // Arrange: seed storage for authenticated state
@@ -222,7 +226,10 @@ void main() {
         stateMachine.addInstance<AWSHttpClient>(mockHttpClient);
 
         // Don't inject platform (null)
-        await plugin.configure(config: mockConfig, authProviderRepo: testAuthRepo);
+        await plugin.configure(
+          config: mockConfig,
+          authProviderRepo: testAuthRepo,
+        );
 
         // Act & Assert: should throw PasskeyNotSupportedException
         expect(

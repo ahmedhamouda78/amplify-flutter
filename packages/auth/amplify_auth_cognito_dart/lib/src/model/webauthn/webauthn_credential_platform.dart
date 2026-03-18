@@ -23,6 +23,7 @@ abstract interface class WebAuthnCredentialPlatform {
   /// On other platforms, returns the stub (native platforms use Pigeon bridge
   /// instead).
   factory WebAuthnCredentialPlatform() = WebAuthnCredentialPlatformImpl;
+
   /// Creates a new passkey credential on the device.
   ///
   /// [optionsJson] is a JSON-serialized `PublicKeyCredentialCreationOptions`

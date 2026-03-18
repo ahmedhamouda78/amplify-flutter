@@ -105,8 +105,8 @@ void main() {
           }),
           respondToAuthChallenge: expectAsync1((request) async {
             expect(
-              request.challengeResponses?[
-                  CognitoConstants.challengeParamCredential],
+              request.challengeResponses?[CognitoConstants
+                  .challengeParamCredential],
               testCredentialResponse,
             );
             expect(
@@ -139,9 +139,7 @@ void main() {
               .accept(
                 SignInEvent.initiate(
                   authFlowType: AuthenticationFlowType.userAuth,
-                  parameters: SignInParameters(
-                    (p) => p..username = username,
-                  ),
+                  parameters: SignInParameters((p) => p..username = username),
                 ),
               )
               .completed,
@@ -170,16 +168,15 @@ void main() {
           }),
         );
 
-        stateMachine
-            .addInstance<cognito_idp.CognitoIdentityProviderClient>(mockClient);
+        stateMachine.addInstance<cognito_idp.CognitoIdentityProviderClient>(
+          mockClient,
+        );
 
         stateMachine
             .dispatch(
               SignInEvent.initiate(
                 authFlowType: AuthenticationFlowType.userAuth,
-                parameters: SignInParameters(
-                  (p) => p..username = username,
-                ),
+                parameters: SignInParameters((p) => p..username = username),
               ),
             )
             .ignore();
@@ -207,108 +204,108 @@ void main() {
         );
       });
 
-      test('two-step SELECT_CHALLENGE -> WEB_AUTHN completes sign-in',
-          () async {
-        await configure();
+      test(
+        'two-step SELECT_CHALLENGE -> WEB_AUTHN completes sign-in',
+        () async {
+          await configure();
 
-        var respondCallCount = 0;
-        final mockClient = MockCognitoIdentityProviderClient(
-          initiateAuth: expectAsync1((_) async {
-            return cognito_idp.InitiateAuthResponse(
-              challengeName: cognito_idp.ChallengeNameType.selectChallenge,
-              availableChallenges: [
-                cognito_idp.ChallengeNameType.webAuthn,
-                cognito_idp.ChallengeNameType.password,
-              ],
-              challengeParameters: {
-                CognitoConstants.challengeParamUsername: username,
-              },
-              session: 'test-session',
-            );
-          }),
-          respondToAuthChallenge: (request) async {
-            respondCallCount++;
-            if (respondCallCount == 1) {
-              // First call: SELECT_CHALLENGE answer
-              expect(
-                request.challengeName,
-                cognito_idp.ChallengeNameType.selectChallenge,
-              );
-              expect(
-                request.challengeResponses?[
-                    CognitoConstants.challengeParamAnswer],
-                'WEB_AUTHN',
-              );
-              return cognito_idp.RespondToAuthChallengeResponse(
-                challengeName: cognito_idp.ChallengeNameType.webAuthn,
+          var respondCallCount = 0;
+          final mockClient = MockCognitoIdentityProviderClient(
+            initiateAuth: expectAsync1((_) async {
+              return cognito_idp.InitiateAuthResponse(
+                challengeName: cognito_idp.ChallengeNameType.selectChallenge,
+                availableChallenges: [
+                  cognito_idp.ChallengeNameType.webAuthn,
+                  cognito_idp.ChallengeNameType.password,
+                ],
                 challengeParameters: {
-                  CognitoConstants.challengeParamCredentialRequestOptions:
-                      testCredentialRequestOptions,
                   CognitoConstants.challengeParamUsername: username,
                 },
-                session: 'test-session-2',
+                session: 'test-session',
               );
-            } else {
-              // Second call: WEB_AUTHN credential response
-              expect(
-                request.challengeName,
-                cognito_idp.ChallengeNameType.webAuthn,
-              );
-              expect(
-                request.challengeResponses?[
-                    CognitoConstants.challengeParamCredential],
-                testCredentialResponse,
-              );
-              return cognito_idp.RespondToAuthChallengeResponse(
-                authenticationResult: cognito_idp.AuthenticationResultType(
-                  accessToken: accessToken.raw,
-                  refreshToken: refreshToken,
-                  idToken: idToken.raw,
-                ),
-              );
-            }
-          },
-        );
+            }),
+            respondToAuthChallenge: (request) async {
+              respondCallCount++;
+              if (respondCallCount == 1) {
+                // First call: SELECT_CHALLENGE answer
+                expect(
+                  request.challengeName,
+                  cognito_idp.ChallengeNameType.selectChallenge,
+                );
+                expect(
+                  request.challengeResponses?[CognitoConstants
+                      .challengeParamAnswer],
+                  'WEB_AUTHN',
+                );
+                return cognito_idp.RespondToAuthChallengeResponse(
+                  challengeName: cognito_idp.ChallengeNameType.webAuthn,
+                  challengeParameters: {
+                    CognitoConstants.challengeParamCredentialRequestOptions:
+                        testCredentialRequestOptions,
+                    CognitoConstants.challengeParamUsername: username,
+                  },
+                  session: 'test-session-2',
+                );
+              } else {
+                // Second call: WEB_AUTHN credential response
+                expect(
+                  request.challengeName,
+                  cognito_idp.ChallengeNameType.webAuthn,
+                );
+                expect(
+                  request.challengeResponses?[CognitoConstants
+                      .challengeParamCredential],
+                  testCredentialResponse,
+                );
+                return cognito_idp.RespondToAuthChallengeResponse(
+                  authenticationResult: cognito_idp.AuthenticationResultType(
+                    accessToken: accessToken.raw,
+                    refreshToken: refreshToken,
+                    idToken: idToken.raw,
+                  ),
+                );
+              }
+            },
+          );
 
-        final mockPlatform = MockWebAuthnCredentialPlatform(
-          onGetCredential: expectAsync1((optionsJson) async {
-            return testCredentialResponse;
-          }),
-        );
+          final mockPlatform = MockWebAuthnCredentialPlatform(
+            onGetCredential: expectAsync1((optionsJson) async {
+              return testCredentialResponse;
+            }),
+          );
 
-        stateMachine
-          ..addInstance<cognito_idp.CognitoIdentityProviderClient>(mockClient)
-          ..addInstance<WebAuthnCredentialPlatform>(mockPlatform);
-
-        stateMachine
-            .dispatch(
-              SignInEvent.initiate(
-                authFlowType: AuthenticationFlowType.userAuth,
-                parameters: SignInParameters(
-                  (p) => p..username = username,
-                ),
-              ),
-            )
-            .ignore();
-
-        final signInStateMachine = stateMachine.expect(SignInStateMachine.type);
-
-        // Wait for SELECT_CHALLENGE state
-        await expectLater(
-          signInStateMachine.stream,
-          emitsThrough(isA<SignInChallenge>()),
-        );
-
-        // Respond with WEB_AUTHN selection
-        expect(
           stateMachine
-              .accept(
-                const SignInRespondToChallenge(answer: 'WEB_AUTHN'),
+            ..addInstance<cognito_idp.CognitoIdentityProviderClient>(mockClient)
+            ..addInstance<WebAuthnCredentialPlatform>(mockPlatform);
+
+          stateMachine
+              .dispatch(
+                SignInEvent.initiate(
+                  authFlowType: AuthenticationFlowType.userAuth,
+                  parameters: SignInParameters((p) => p..username = username),
+                ),
               )
-              .completed,
-          completion(isA<SignInSuccess>()),
-        );
-      });
+              .ignore();
+
+          final signInStateMachine = stateMachine.expect(
+            SignInStateMachine.type,
+          );
+
+          // Wait for SELECT_CHALLENGE state
+          await expectLater(
+            signInStateMachine.stream,
+            emitsThrough(isA<SignInChallenge>()),
+          );
+
+          // Respond with WEB_AUTHN selection
+          expect(
+            stateMachine
+                .accept(const SignInRespondToChallenge(answer: 'WEB_AUTHN'))
+                .completed,
+            completion(isA<SignInSuccess>()),
+          );
+        },
+      );
     });
 
     group('error handling', () {
@@ -344,9 +341,7 @@ void main() {
               .accept(
                 SignInEvent.initiate(
                   authFlowType: AuthenticationFlowType.userAuth,
-                  parameters: SignInParameters(
-                    (p) => p..username = username,
-                  ),
+                  parameters: SignInParameters((p) => p..username = username),
                 ),
               )
               .completed,
@@ -378,17 +373,16 @@ void main() {
         );
 
         // Intentionally NOT registering WebAuthnCredentialPlatform
-        stateMachine
-            .addInstance<cognito_idp.CognitoIdentityProviderClient>(mockClient);
+        stateMachine.addInstance<cognito_idp.CognitoIdentityProviderClient>(
+          mockClient,
+        );
 
         expect(
           stateMachine
               .accept(
                 SignInEvent.initiate(
                   authFlowType: AuthenticationFlowType.userAuth,
-                  parameters: SignInParameters(
-                    (p) => p..username = username,
-                  ),
+                  parameters: SignInParameters((p) => p..username = username),
                 ),
               )
               .completed,
@@ -402,51 +396,51 @@ void main() {
         );
       });
 
-      test('emits failure when CREDENTIAL_REQUEST_OPTIONS is missing',
-          () async {
-        await configure();
+      test(
+        'emits failure when CREDENTIAL_REQUEST_OPTIONS is missing',
+        () async {
+          await configure();
 
-        final mockClient = MockCognitoIdentityProviderClient(
-          initiateAuth: expectAsync1((_) async {
-            return cognito_idp.InitiateAuthResponse(
-              challengeName: cognito_idp.ChallengeNameType.webAuthn,
-              challengeParameters: {
-                // Missing CREDENTIAL_REQUEST_OPTIONS
-                CognitoConstants.challengeParamUsername: username,
-              },
-              session: 'test-session',
-            );
-          }),
-        );
+          final mockClient = MockCognitoIdentityProviderClient(
+            initiateAuth: expectAsync1((_) async {
+              return cognito_idp.InitiateAuthResponse(
+                challengeName: cognito_idp.ChallengeNameType.webAuthn,
+                challengeParameters: {
+                  // Missing CREDENTIAL_REQUEST_OPTIONS
+                  CognitoConstants.challengeParamUsername: username,
+                },
+                session: 'test-session',
+              );
+            }),
+          );
 
-        final mockPlatform = MockWebAuthnCredentialPlatform(
-          onGetCredential: (_) async => testCredentialResponse,
-        );
+          final mockPlatform = MockWebAuthnCredentialPlatform(
+            onGetCredential: (_) async => testCredentialResponse,
+          );
 
-        stateMachine
-          ..addInstance<cognito_idp.CognitoIdentityProviderClient>(mockClient)
-          ..addInstance<WebAuthnCredentialPlatform>(mockPlatform);
-
-        expect(
           stateMachine
-              .accept(
-                SignInEvent.initiate(
-                  authFlowType: AuthenticationFlowType.userAuth,
-                  parameters: SignInParameters(
-                    (p) => p..username = username,
+            ..addInstance<cognito_idp.CognitoIdentityProviderClient>(mockClient)
+            ..addInstance<WebAuthnCredentialPlatform>(mockPlatform);
+
+          expect(
+            stateMachine
+                .accept(
+                  SignInEvent.initiate(
+                    authFlowType: AuthenticationFlowType.userAuth,
+                    parameters: SignInParameters((p) => p..username = username),
                   ),
-                ),
-              )
-              .completed,
-          completion(
-            isA<SignInFailure>().having(
-              (state) => state.exception,
-              'exception',
-              isA<PasskeyAssertionFailedException>(),
+                )
+                .completed,
+            completion(
+              isA<SignInFailure>().having(
+                (state) => state.exception,
+                'exception',
+                isA<PasskeyAssertionFailedException>(),
+              ),
             ),
-          ),
-        );
-      });
+          );
+        },
+      );
     });
   });
 }

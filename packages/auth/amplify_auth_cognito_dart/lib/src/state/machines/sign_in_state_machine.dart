@@ -385,8 +385,9 @@ final class SignInStateMachine
       ),
       ChallengeNameType.passwordSrp when hasUserResponse =>
         createPasswordSrpRequest(event),
-      ChallengeNameType.webAuthn =>
-        createWebAuthnAssertionRequest(challengeParameters),
+      ChallengeNameType.webAuthn => createWebAuthnAssertionRequest(
+        challengeParameters,
+      ),
       _ => null,
     };
   }
@@ -959,8 +960,9 @@ final class SignInStateMachine
   Future<RespondToAuthChallengeRequest> createWebAuthnAssertionRequest(
     BuiltMap<String, String?> challengeParameters,
   ) async {
-    final optionsJson = challengeParameters[
-        CognitoConstants.challengeParamCredentialRequestOptions];
+    final optionsJson =
+        challengeParameters[CognitoConstants
+            .challengeParamCredentialRequestOptions];
     if (optionsJson == null || optionsJson.isEmpty) {
       throw const PasskeyAssertionFailedException(
         'CREDENTIAL_REQUEST_OPTIONS not found in challenge parameters',

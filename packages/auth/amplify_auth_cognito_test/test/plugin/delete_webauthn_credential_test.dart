@@ -54,7 +54,10 @@ void main() {
     group('deleteWebAuthnCredential', () {
       test('throws when signed out', () async {
         // Arrange: configure plugin but don't seed storage
-        await plugin.configure(config: mockConfig, authProviderRepo: testAuthRepo);
+        await plugin.configure(
+          config: mockConfig,
+          authProviderRepo: testAuthRepo,
+        );
 
         // Act & Assert
         expect(
@@ -73,17 +76,19 @@ void main() {
 
         // Mock HTTP client for DeleteWebAuthnCredential
         final mockHttpClient = MockAWSHttpClient((request, isCancelled) async {
-          final bodyMap = json.decode(utf8.decode(request.bodyBytes)) as Map<String, dynamic>;
+          final bodyMap =
+              json.decode(utf8.decode(request.bodyBytes))
+                  as Map<String, dynamic>;
           expect(bodyMap['CredentialId'], 'test-cred-id');
 
-          return AWSHttpResponse(
-            statusCode: 200,
-            body: utf8.encode('{}'),
-          );
+          return AWSHttpResponse(statusCode: 200, body: utf8.encode('{}'));
         });
         stateMachine.addInstance<AWSHttpClient>(mockHttpClient);
 
-        await plugin.configure(config: mockConfig, authProviderRepo: testAuthRepo);
+        await plugin.configure(
+          config: mockConfig,
+          authProviderRepo: testAuthRepo,
+        );
 
         // Act & Assert: should complete without exception
         await plugin.deleteWebAuthnCredential('test-cred-id');
@@ -110,7 +115,10 @@ void main() {
         });
         stateMachine.addInstance<AWSHttpClient>(mockHttpClient);
 
-        await plugin.configure(config: mockConfig, authProviderRepo: testAuthRepo);
+        await plugin.configure(
+          config: mockConfig,
+          authProviderRepo: testAuthRepo,
+        );
 
         // Act & Assert: should throw exception
         expect(

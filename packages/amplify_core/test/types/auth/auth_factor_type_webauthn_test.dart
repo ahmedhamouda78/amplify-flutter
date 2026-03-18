@@ -12,10 +12,7 @@ void main() {
     });
 
     test('is included in AuthFactorType.values', () {
-      expect(
-        AuthFactorType.values,
-        contains(AuthFactorType.webAuthn),
-      );
+      expect(AuthFactorType.values, contains(AuthFactorType.webAuthn));
       expect(AuthFactorType.values.length, 5);
     });
 

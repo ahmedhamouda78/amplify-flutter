@@ -72,9 +72,7 @@ class MessageResolver extends Resolver<MessageResolverKey> {
 
   /// The message displayed when a passkey sign-in ceremony fails.
   String passkeyCeremonyFailed(BuildContext context) {
-    return AuthenticatorLocalizations.messagesOf(
-      context,
-    ).passkeyCeremonyFailed;
+    return AuthenticatorLocalizations.messagesOf(context).passkeyCeremonyFailed;
   }
 
   /// Descriptive text explaining what passkeys are.

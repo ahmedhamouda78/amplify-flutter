@@ -52,8 +52,7 @@ class AuthenticatorTitleLocalizationsEn
       'Account recovery requires verified contact information';
 
   @override
-  String get continueSignInWithFirstFactorSelection =>
-      'Choose how to sign in';
+  String get continueSignInWithFirstFactorSelection => 'Choose how to sign in';
 
   @override
   String get passkeyPrompt => 'Sign in faster with a passkey';

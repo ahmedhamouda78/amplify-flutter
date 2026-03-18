@@ -35,7 +35,8 @@ class MockLibFido2Bindings extends LibFido2Bindings {
   void Function(int flags) get fidoInit => (_) {};
 
   @override
-  Pointer Function(int n) get fidoDevInfoNew => (_) => calloc<Uint8>(1024);
+  Pointer Function(int n) get fidoDevInfoNew =>
+      (_) => calloc<Uint8>(1024);
 
   @override
   void Function(Pointer<Pointer> devlist, int n) get fidoDevInfoFree =>
@@ -47,10 +48,10 @@ class MockLibFido2Bindings extends LibFido2Bindings {
 
   @override
   int Function(Pointer devlist, int n, Pointer<Size> found)
-      get fidoDevInfoManifest => (_, __, found) {
-            found.value = mockDeviceCount;
-            return mockManifestResult;
-          };
+  get fidoDevInfoManifest => (_, __, found) {
+    found.value = mockDeviceCount;
+    return mockManifestResult;
+  };
 
   @override
   Pointer<Utf8> Function(Pointer di) get fidoDevInfoPath =>
@@ -62,49 +63,53 @@ class MockLibFido2Bindings extends LibFido2Bindings {
 
   @override
   Pointer Function() get fidoDevNew => () {
-        _mockDevice = calloc<Uint8>(256);
-        return _mockDevice!;
-      };
+    _mockDevice = calloc<Uint8>(256);
+    return _mockDevice!;
+  };
 
   @override
   void Function(Pointer<Pointer> dev) get fidoDevFree => (dev) {
-        if (_mockDevice != null && _mockDevice != nullptr) {
-          calloc.free(_mockDevice!);
-          _mockDevice = null;
-        }
-      };
+    if (_mockDevice != null && _mockDevice != nullptr) {
+      calloc.free(_mockDevice!);
+      _mockDevice = null;
+    }
+  };
 
   @override
   int Function(Pointer dev, Pointer<Utf8> path) get fidoDevOpen =>
       (_, __) => mockOpenResult;
 
   @override
-  int Function(Pointer dev) get fidoDevClose => (_) => fidoOk;
+  int Function(Pointer dev) get fidoDevClose =>
+      (_) => fidoOk;
 
   @override
   Pointer Function() get fidoCredNew => () {
-        _mockCred = calloc<Uint8>(1024);
-        return _mockCred!;
-      };
+    _mockCred = calloc<Uint8>(1024);
+    return _mockCred!;
+  };
 
   @override
   void Function(Pointer<Pointer> cred) get fidoCredFree => (cred) {
-        if (_mockCred != null && _mockCred != nullptr) {
-          calloc.free(_mockCred!);
-          _mockCred = null;
-        }
-      };
+    if (_mockCred != null && _mockCred != nullptr) {
+      calloc.free(_mockCred!);
+      _mockCred = null;
+    }
+  };
 
   @override
-  int Function(Pointer cred, int type) get fidoCredSetType => (_, __) => fidoOk;
+  int Function(Pointer cred, int type) get fidoCredSetType =>
+      (_, __) => fidoOk;
 
   @override
   int Function(Pointer cred, Pointer<Uint8> hash, int hashLen)
-      get fidoCredSetClientdataHash => (_, __, ___) => fidoOk;
+  get fidoCredSetClientdataHash =>
+      (_, __, ___) => fidoOk;
 
   @override
   int Function(Pointer cred, Pointer<Utf8> rpId, Pointer<Utf8> rpName)
-      get fidoCredSetRp => (_, __, ___) => fidoOk;
+  get fidoCredSetRp =>
+      (_, __, ___) => fidoOk;
 
   @override
   int Function(
@@ -114,25 +119,30 @@ class MockLibFido2Bindings extends LibFido2Bindings {
     Pointer<Utf8> userName,
     Pointer<Utf8> displayName,
     Pointer<Utf8> icon,
-  ) get fidoCredSetUser => (_, __, ___, ____, _____, ______) => fidoOk;
+  )
+  get fidoCredSetUser =>
+      (_, __, ___, ____, _____, ______) => fidoOk;
 
   @override
-  int Function(Pointer cred, int rk) get fidoCredSetRk => (_, __) => fidoOk;
+  int Function(Pointer cred, int rk) get fidoCredSetRk =>
+      (_, __) => fidoOk;
 
   @override
-  int Function(Pointer cred, int uv) get fidoCredSetUv => (_, __) => fidoOk;
+  int Function(Pointer cred, int uv) get fidoCredSetUv =>
+      (_, __) => fidoOk;
 
   @override
   int Function(Pointer dev, Pointer cred, Pointer<Utf8> pin)
-      get fidoDevMakeCred => (_, __, ___) => mockMakeCredResult;
+  get fidoDevMakeCred =>
+      (_, __, ___) => mockMakeCredResult;
 
   @override
   Pointer<Uint8> Function(Pointer cred) get fidoCredIdPtr => (_) {
-        final bytes = Uint8List.fromList(utf8.encode('mock-cred-id'));
-        final ptr = calloc<Uint8>(bytes.length);
-        ptr.asTypedList(bytes.length).setAll(0, bytes);
-        return ptr;
-      };
+    final bytes = Uint8List.fromList(utf8.encode('mock-cred-id'));
+    final ptr = calloc<Uint8>(bytes.length);
+    ptr.asTypedList(bytes.length).setAll(0, bytes);
+    return ptr;
+  };
 
   @override
   int Function(Pointer cred) get fidoCredIdLen =>
@@ -140,36 +150,40 @@ class MockLibFido2Bindings extends LibFido2Bindings {
 
   @override
   Pointer<Uint8> Function(Pointer cred) get fidoCredAuthdataPtr => (_) {
-        // Return mock authenticator data (32-byte rpIdHash + flags + counter + AAGUID + credId + pubKey)
-        final mockAuthData = Uint8List(37);
-        final ptr = calloc<Uint8>(mockAuthData.length);
-        ptr.asTypedList(mockAuthData.length).setAll(0, mockAuthData);
-        return ptr;
-      };
+    // Return mock authenticator data (32-byte rpIdHash + flags + counter + AAGUID + credId + pubKey)
+    final mockAuthData = Uint8List(37);
+    final ptr = calloc<Uint8>(mockAuthData.length);
+    ptr.asTypedList(mockAuthData.length).setAll(0, mockAuthData);
+    return ptr;
+  };
 
   @override
-  int Function(Pointer cred) get fidoCredAuthdataLen => (_) => 37;
+  int Function(Pointer cred) get fidoCredAuthdataLen =>
+      (_) => 37;
 
   @override
   Pointer<Uint8> Function(Pointer cred) get fidoCredX5cPtr =>
       (_) => calloc<Uint8>(1);
 
   @override
-  int Function(Pointer cred) get fidoCredX5cLen => (_) => 0;
+  int Function(Pointer cred) get fidoCredX5cLen =>
+      (_) => 0;
 
   @override
   Pointer<Uint8> Function(Pointer cred) get fidoCredSigPtr =>
       (_) => calloc<Uint8>(1);
 
   @override
-  int Function(Pointer cred) get fidoCredSigLen => (_) => 0;
+  int Function(Pointer cred) get fidoCredSigLen =>
+      (_) => 0;
 
   @override
   Pointer<Uint8> Function(Pointer cred) get fidoCredClientdataHashPtr =>
       (_) => calloc<Uint8>(32);
 
   @override
-  int Function(Pointer cred) get fidoCredClientdataHashLen => (_) => 32;
+  int Function(Pointer cred) get fidoCredClientdataHashLen =>
+      (_) => 32;
 
   @override
   Pointer<Utf8> Function(Pointer cred) get fidoCredFmt =>
@@ -177,39 +191,44 @@ class MockLibFido2Bindings extends LibFido2Bindings {
 
   @override
   Pointer Function() get fidoAssertNew => () {
-        _mockAssert = calloc<Uint8>(1024);
-        return _mockAssert!;
-      };
+    _mockAssert = calloc<Uint8>(1024);
+    return _mockAssert!;
+  };
 
   @override
   void Function(Pointer<Pointer> assert_) get fidoAssertFree => (assert_) {
-        if (_mockAssert != null && _mockAssert != nullptr) {
-          calloc.free(_mockAssert!);
-          _mockAssert = null;
-        }
-      };
+    if (_mockAssert != null && _mockAssert != nullptr) {
+      calloc.free(_mockAssert!);
+      _mockAssert = null;
+    }
+  };
 
   @override
   int Function(Pointer assert_, Pointer<Uint8> hash, int len)
-      get fidoAssertSetClientdataHash => (_, __, ___) => fidoOk;
+  get fidoAssertSetClientdataHash =>
+      (_, __, ___) => fidoOk;
 
   @override
   int Function(Pointer assert_, Pointer<Utf8> rpId) get fidoAssertSetRp =>
       (_, __) => fidoOk;
 
   @override
-  int Function(Pointer assert_, int uv) get fidoAssertSetUv => (_, __) => fidoOk;
+  int Function(Pointer assert_, int uv) get fidoAssertSetUv =>
+      (_, __) => fidoOk;
 
   @override
   int Function(Pointer assert_, Pointer<Uint8> credId, int len)
-      get fidoAssertAllowCred => (_, __, ___) => fidoOk;
+  get fidoAssertAllowCred =>
+      (_, __, ___) => fidoOk;
 
   @override
   int Function(Pointer dev, Pointer assert_, Pointer<Utf8> pin)
-      get fidoDevGetAssert => (_, __, ___) => mockGetAssertResult;
+  get fidoDevGetAssert =>
+      (_, __, ___) => mockGetAssertResult;
 
   @override
-  int Function(Pointer assert_) get fidoAssertCount => (_) => 1;
+  int Function(Pointer assert_) get fidoAssertCount =>
+      (_) => 1;
 
   @override
   Pointer<Uint8> Function(Pointer assert_, int idx) get fidoAssertAuthdataPtr =>
@@ -234,7 +253,8 @@ class MockLibFido2Bindings extends LibFido2Bindings {
       };
 
   @override
-  int Function(Pointer assert_, int idx) get fidoAssertSigLen => (_, __) => 64;
+  int Function(Pointer assert_, int idx) get fidoAssertSigLen =>
+      (_, __) => 64;
 
   @override
   Pointer<Uint8> Function(Pointer assert_, int idx) get fidoAssertUserIdPtr =>
@@ -279,11 +299,12 @@ void main() {
     });
 
     group('_ensureSupported', () {
-      test('throws PasskeyNotSupportedException when bindings is null',
-          () async {
-        final platform = LinuxWebAuthnPlatform(bindings: null);
+      test(
+        'throws PasskeyNotSupportedException when bindings is null',
+        () async {
+          final platform = LinuxWebAuthnPlatform(bindings: null);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rp": {"id": "example.com", "name": "Example"},
   "user": {"id": "dXNlcjEyMw", "name": "testuser", "displayName": "Test User"},
@@ -292,11 +313,12 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.createCredential(optionsJson),
-          throwsA(isA<PasskeyNotSupportedException>()),
-        );
-      });
+          expect(
+            () => platform.createCredential(optionsJson),
+            throwsA(isA<PasskeyNotSupportedException>()),
+          );
+        },
+      );
     });
 
     group('createCredential', () {
@@ -342,14 +364,15 @@ void main() {
         );
       });
 
-      test('throws PasskeyCancelledException for fidoErrActionTimeout',
-          () async {
-        final bindings = MockLibFido2Bindings(
-          mockMakeCredResult: fidoErrActionTimeout,
-        );
-        final platform = LinuxWebAuthnPlatform(bindings: bindings);
+      test(
+        'throws PasskeyCancelledException for fidoErrActionTimeout',
+        () async {
+          final bindings = MockLibFido2Bindings(
+            mockMakeCredResult: fidoErrActionTimeout,
+          );
+          final platform = LinuxWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rp": {"id": "example.com", "name": "Example"},
   "user": {"id": "dXNlcjEyMw", "name": "testuser", "displayName": "Test User"},
@@ -358,21 +381,20 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.createCredential(optionsJson),
-          throwsA(isA<PasskeyCancelledException>()),
-        );
-      });
+          expect(
+            () => platform.createCredential(optionsJson),
+            throwsA(isA<PasskeyCancelledException>()),
+          );
+        },
+      );
 
       test(
-          'throws PasskeyRegistrationFailedException for unknown error code in registration',
-          () async {
-        final bindings = MockLibFido2Bindings(
-          mockMakeCredResult: fidoErrTx,
-        );
-        final platform = LinuxWebAuthnPlatform(bindings: bindings);
+        'throws PasskeyRegistrationFailedException for unknown error code in registration',
+        () async {
+          final bindings = MockLibFido2Bindings(mockMakeCredResult: fidoErrTx);
+          final platform = LinuxWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rp": {"id": "example.com", "name": "Example"},
   "user": {"id": "dXNlcjEyMw", "name": "testuser", "displayName": "Test User"},
@@ -381,18 +403,20 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.createCredential(optionsJson),
-          throwsA(isA<PasskeyRegistrationFailedException>()),
-        );
-      });
+          expect(
+            () => platform.createCredential(optionsJson),
+            throwsA(isA<PasskeyRegistrationFailedException>()),
+          );
+        },
+      );
 
-      test('throws PasskeyNotSupportedException when no devices found',
-          () async {
-        final bindings = MockLibFido2Bindings(mockDeviceCount: 0);
-        final platform = LinuxWebAuthnPlatform(bindings: bindings);
+      test(
+        'throws PasskeyNotSupportedException when no devices found',
+        () async {
+          final bindings = MockLibFido2Bindings(mockDeviceCount: 0);
+          final platform = LinuxWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rp": {"id": "example.com", "name": "Example"},
   "user": {"id": "dXNlcjEyMw", "name": "testuser", "displayName": "Test User"},
@@ -401,18 +425,20 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.createCredential(optionsJson),
-          throwsA(isA<PasskeyNotSupportedException>()),
-        );
-      });
+          expect(
+            () => platform.createCredential(optionsJson),
+            throwsA(isA<PasskeyNotSupportedException>()),
+          );
+        },
+      );
 
-      test('throws PasskeyNotSupportedException when device open fails',
-          () async {
-        final bindings = MockLibFido2Bindings(mockOpenResult: fidoErrTx);
-        final platform = LinuxWebAuthnPlatform(bindings: bindings);
+      test(
+        'throws PasskeyNotSupportedException when device open fails',
+        () async {
+          final bindings = MockLibFido2Bindings(mockOpenResult: fidoErrTx);
+          final platform = LinuxWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rp": {"id": "example.com", "name": "Example"},
   "user": {"id": "dXNlcjEyMw", "name": "testuser", "displayName": "Test User"},
@@ -421,11 +447,12 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.createCredential(optionsJson),
-          throwsA(isA<PasskeyNotSupportedException>()),
-        );
-      });
+          expect(
+            () => platform.createCredential(optionsJson),
+            throwsA(isA<PasskeyNotSupportedException>()),
+          );
+        },
+      );
     });
 
     group('getCredential', () {
@@ -472,14 +499,15 @@ void main() {
         );
       });
 
-      test('throws PasskeyCancelledException for fidoErrActionTimeout',
-          () async {
-        final bindings = MockLibFido2Bindings(
-          mockGetAssertResult: fidoErrActionTimeout,
-        );
-        final platform = LinuxWebAuthnPlatform(bindings: bindings);
+      test(
+        'throws PasskeyCancelledException for fidoErrActionTimeout',
+        () async {
+          final bindings = MockLibFido2Bindings(
+            mockGetAssertResult: fidoErrActionTimeout,
+          );
+          final platform = LinuxWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rpId": "example.com",
   "challenge": "Y2hhbGxlbmdl",
@@ -487,20 +515,22 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.getCredential(optionsJson),
-          throwsA(isA<PasskeyCancelledException>()),
-        );
-      });
+          expect(
+            () => platform.getCredential(optionsJson),
+            throwsA(isA<PasskeyCancelledException>()),
+          );
+        },
+      );
 
-      test('throws PasskeyAssertionFailedException for fidoErrPinRequired',
-          () async {
-        final bindings = MockLibFido2Bindings(
-          mockGetAssertResult: fidoErrPinRequired,
-        );
-        final platform = LinuxWebAuthnPlatform(bindings: bindings);
+      test(
+        'throws PasskeyAssertionFailedException for fidoErrPinRequired',
+        () async {
+          final bindings = MockLibFido2Bindings(
+            mockGetAssertResult: fidoErrPinRequired,
+          );
+          final platform = LinuxWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rpId": "example.com",
   "challenge": "Y2hhbGxlbmdl",
@@ -508,20 +538,22 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.getCredential(optionsJson),
-          throwsA(isA<PasskeyAssertionFailedException>()),
-        );
-      });
+          expect(
+            () => platform.getCredential(optionsJson),
+            throwsA(isA<PasskeyAssertionFailedException>()),
+          );
+        },
+      );
 
-      test('throws PasskeyAssertionFailedException for fidoErrUvBlocked',
-          () async {
-        final bindings = MockLibFido2Bindings(
-          mockGetAssertResult: fidoErrUvBlocked,
-        );
-        final platform = LinuxWebAuthnPlatform(bindings: bindings);
+      test(
+        'throws PasskeyAssertionFailedException for fidoErrUvBlocked',
+        () async {
+          final bindings = MockLibFido2Bindings(
+            mockGetAssertResult: fidoErrUvBlocked,
+          );
+          final platform = LinuxWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rpId": "example.com",
   "challenge": "Y2hhbGxlbmdl",
@@ -529,20 +561,20 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.getCredential(optionsJson),
-          throwsA(isA<PasskeyAssertionFailedException>()),
-        );
-      });
+          expect(
+            () => platform.getCredential(optionsJson),
+            throwsA(isA<PasskeyAssertionFailedException>()),
+          );
+        },
+      );
 
-      test('throws PasskeyAssertionFailedException for unknown error code',
-          () async {
-        final bindings = MockLibFido2Bindings(
-          mockGetAssertResult: fidoErrTx,
-        );
-        final platform = LinuxWebAuthnPlatform(bindings: bindings);
+      test(
+        'throws PasskeyAssertionFailedException for unknown error code',
+        () async {
+          final bindings = MockLibFido2Bindings(mockGetAssertResult: fidoErrTx);
+          final platform = LinuxWebAuthnPlatform(bindings: bindings);
 
-        const optionsJson = '''
+          const optionsJson = '''
 {
   "rpId": "example.com",
   "challenge": "Y2hhbGxlbmdl",
@@ -550,11 +582,12 @@ void main() {
 }
 ''';
 
-        expect(
-          () => platform.getCredential(optionsJson),
-          throwsA(isA<PasskeyAssertionFailedException>()),
-        );
-      });
+          expect(
+            () => platform.getCredential(optionsJson),
+            throwsA(isA<PasskeyAssertionFailedException>()),
+          );
+        },
+      );
     });
   });
 }

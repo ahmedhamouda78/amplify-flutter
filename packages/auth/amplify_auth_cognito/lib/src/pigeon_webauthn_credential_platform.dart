@@ -83,20 +83,11 @@ class PigeonWebAuthnCredentialPlatform implements WebAuthnCredentialPlatform {
     final message = e.message ?? 'Unknown passkey error';
     switch (e.code) {
       case WebAuthnErrorCodes.cancelled:
-        return PasskeyCancelledException(
-          message,
-          underlyingException: e,
-        );
+        return PasskeyCancelledException(message, underlyingException: e);
       case WebAuthnErrorCodes.notSupported:
-        return PasskeyNotSupportedException(
-          message,
-          underlyingException: e,
-        );
+        return PasskeyNotSupportedException(message, underlyingException: e);
       case WebAuthnErrorCodes.rpMismatch:
-        return PasskeyRpMismatchException(
-          message,
-          underlyingException: e,
-        );
+        return PasskeyRpMismatchException(message, underlyingException: e);
       default:
         return defaultError(e);
     }
@@ -111,9 +102,7 @@ class PigeonWebAuthnCredentialPlatform implements WebAuthnCredentialPlatform {
     );
   }
 
-  static PasskeyAssertionFailedException _defaultGetError(
-    PlatformException e,
-  ) {
+  static PasskeyAssertionFailedException _defaultGetError(PlatformException e) {
     return PasskeyAssertionFailedException(
       e.message ?? 'Passkey assertion failed',
       underlyingException: e,

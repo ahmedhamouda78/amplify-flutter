@@ -26,7 +26,7 @@ class WindowsWebAuthnPlatform implements WebAuthnCredentialPlatform {
   ///
   /// Accepts an optional [WebAuthnBindings] for testability.
   WindowsWebAuthnPlatform({WebAuthnBindings? bindings})
-      : _bindings = bindings ?? WebAuthnBindings();
+    : _bindings = bindings ?? WebAuthnBindings();
 
   final WebAuthnBindings _bindings;
 
@@ -43,8 +43,9 @@ class WindowsWebAuthnPlatform implements WebAuthnCredentialPlatform {
 
       final pbIsAvailable = calloc<Int32>();
       try {
-        final hr = _bindings
-            .isUserVerifyingPlatformAuthenticatorAvailable(pbIsAvailable);
+        final hr = _bindings.isUserVerifyingPlatformAuthenticatorAvailable(
+          pbIsAvailable,
+        );
         if (hr != S_OK) {
           return false;
         }
@@ -104,10 +105,16 @@ class WindowsWebAuthnPlatform implements WebAuthnCredentialPlatform {
       final rpInfo = arena<Uint8>(RpEntityOffsets.structSize);
       _zeroMemory(rpInfo, RpEntityOffsets.structSize);
       rpInfo.cast<Uint32>().value = WEBAUTHN_RP_ENTITY_INFORMATION_VERSION;
-      _writePointerAt(rpInfo, RpEntityOffsets.pwszId,
-          rpId.toNativeUtf16(allocator: arena).cast());
-      _writePointerAt(rpInfo, RpEntityOffsets.pwszName,
-          rpName.toNativeUtf16(allocator: arena).cast());
+      _writePointerAt(
+        rpInfo,
+        RpEntityOffsets.pwszId,
+        rpId.toNativeUtf16(allocator: arena).cast(),
+      );
+      _writePointerAt(
+        rpInfo,
+        RpEntityOffsets.pwszName,
+        rpName.toNativeUtf16(allocator: arena).cast(),
+      );
 
       // --- User Entity ---
       final userInfo = arena<Uint8>(UserEntityOffsets.structSize);
@@ -117,19 +124,25 @@ class WindowsWebAuthnPlatform implements WebAuthnCredentialPlatform {
       final pbUserId = arena<Uint8>(userIdBytes.length);
       pbUserId.asTypedList(userIdBytes.length).setAll(0, userIdBytes);
       _writePointerAt(userInfo, UserEntityOffsets.pbId, pbUserId);
-      _writePointerAt(userInfo, UserEntityOffsets.pwszName,
-          userName.toNativeUtf16(allocator: arena).cast());
-      _writePointerAt(userInfo, UserEntityOffsets.pwszDisplayName,
-          userDisplayName.toNativeUtf16(allocator: arena).cast());
+      _writePointerAt(
+        userInfo,
+        UserEntityOffsets.pwszName,
+        userName.toNativeUtf16(allocator: arena).cast(),
+      );
+      _writePointerAt(
+        userInfo,
+        UserEntityOffsets.pwszDisplayName,
+        userDisplayName.toNativeUtf16(allocator: arena).cast(),
+      );
 
       // --- COSE Credential Parameters ---
       final paramCount = pubKeyCredParams.length;
       final credParamsArray = paramCount > 0
-          ? arena<Uint8>(
-              CoseCredentialParameterOffsets.structSize * paramCount)
+          ? arena<Uint8>(CoseCredentialParameterOffsets.structSize * paramCount)
           : nullptr.cast<Uint8>();
-      final credTypeStr =
-          WEBAUTHN_CREDENTIAL_TYPE_PUBLIC_KEY.toNativeUtf16(allocator: arena);
+      final credTypeStr = WEBAUTHN_CREDENTIAL_TYPE_PUBLIC_KEY.toNativeUtf16(
+        allocator: arena,
+      );
       for (var i = 0; i < paramCount; i++) {
         final param = pubKeyCredParams[i] as Map<String, dynamic>;
         final alg = param['alg'] as int? ?? -7; // ES256 default
@@ -138,53 +151,73 @@ class WindowsWebAuthnPlatform implements WebAuthnCredentialPlatform {
         _zeroMemory(entry, CoseCredentialParameterOffsets.structSize);
         entry.cast<Uint32>().value = WEBAUTHN_COSE_CREDENTIAL_PARAMETER_VERSION;
         _writePointerAt(
-            entry, CoseCredentialParameterOffsets.pwszCredentialType,
-            credTypeStr.cast());
+          entry,
+          CoseCredentialParameterOffsets.pwszCredentialType,
+          credTypeStr.cast(),
+        );
         _writeInt32At(entry, CoseCredentialParameterOffsets.lAlg, alg);
       }
 
-      final credParams =
-          arena<Uint8>(CoseCredentialParametersOffsets.structSize);
+      final credParams = arena<Uint8>(
+        CoseCredentialParametersOffsets.structSize,
+      );
       _zeroMemory(credParams, CoseCredentialParametersOffsets.structSize);
       credParams.cast<Uint32>().value = paramCount;
-      _writePointerAt(credParams,
-          CoseCredentialParametersOffsets.pCredentialParameters,
-          credParamsArray);
+      _writePointerAt(
+        credParams,
+        CoseCredentialParametersOffsets.pCredentialParameters,
+        credParamsArray,
+      );
 
       // --- Client Data ---
       final clientData = arena<Uint8>(ClientDataOffsets.structSize);
       _zeroMemory(clientData, ClientDataOffsets.structSize);
       clientData.cast<Uint32>().value = WEBAUTHN_CLIENT_DATA_VERSION;
       _writeUint32At(
-          clientData, ClientDataOffsets.cbClientDataJSON, dummyClientData.length);
+        clientData,
+        ClientDataOffsets.cbClientDataJSON,
+        dummyClientData.length,
+      );
       final pbClientData = arena<Uint8>(dummyClientData.length);
       pbClientData
           .asTypedList(dummyClientData.length)
           .setAll(0, dummyClientData);
       _writePointerAt(
-          clientData, ClientDataOffsets.pbClientDataJSON, pbClientData);
-      _writePointerAt(clientData, ClientDataOffsets.pwszHashAlgId,
-          WEBAUTHN_HASH_ALGORITHM_SHA_256.toNativeUtf16(allocator: arena)
-              .cast());
+        clientData,
+        ClientDataOffsets.pbClientDataJSON,
+        pbClientData,
+      );
+      _writePointerAt(
+        clientData,
+        ClientDataOffsets.pwszHashAlgId,
+        WEBAUTHN_HASH_ALGORITHM_SHA_256.toNativeUtf16(allocator: arena).cast(),
+      );
 
       // --- MakeCredential Options (with JSON pass-through) ---
-      final options =
-          arena<Uint8>(MakeCredentialOptionsOffsets.structSize);
+      final options = arena<Uint8>(MakeCredentialOptionsOffsets.structSize);
       _zeroMemory(options, MakeCredentialOptionsOffsets.structSize);
-      options.cast<Uint32>().value =
-          WEBAUTHN_MAKE_CREDENTIAL_OPTIONS_VERSION;
+      options.cast<Uint32>().value = WEBAUTHN_MAKE_CREDENTIAL_OPTIONS_VERSION;
       _writeUint32At(
-          options, MakeCredentialOptionsOffsets.dwTimeoutMilliseconds, 120000);
+        options,
+        MakeCredentialOptionsOffsets.dwTimeoutMilliseconds,
+        120000,
+      );
 
       // JSON pass-through fields
-      _writeUint32At(options, MakeCredentialOptionsOffsets.cbJsonOptions,
-          optionsJsonBytes.length);
+      _writeUint32At(
+        options,
+        MakeCredentialOptionsOffsets.cbJsonOptions,
+        optionsJsonBytes.length,
+      );
       final pbJsonOptions = arena<Uint8>(optionsJsonBytes.length);
       pbJsonOptions
           .asTypedList(optionsJsonBytes.length)
           .setAll(0, optionsJsonBytes);
       _writePointerAt(
-          options, MakeCredentialOptionsOffsets.pbJsonOptions, pbJsonOptions);
+        options,
+        MakeCredentialOptionsOffsets.pbJsonOptions,
+        pbJsonOptions,
+      );
 
       // --- Call MakeCredential ---
       final ppResult = arena<Pointer>();
@@ -205,10 +238,11 @@ class WindowsWebAuthnPlatform implements WebAuthnCredentialPlatform {
       pAttestation = ppResult.value;
 
       // Read JSON response from the attestation result struct.
-      final cbJson = (pAttestation.cast<Uint8>()
-              + CredentialAttestationOffsets.cbRegistrationResponseJSON)
-          .cast<Uint32>()
-          .value;
+      final cbJson =
+          (pAttestation.cast<Uint8>() +
+                  CredentialAttestationOffsets.cbRegistrationResponseJSON)
+              .cast<Uint32>()
+              .value;
       final pbJson = _readPointerAt(
         pAttestation.cast<Uint8>(),
         CredentialAttestationOffsets.pbRegistrationResponseJSON,
@@ -269,34 +303,50 @@ class WindowsWebAuthnPlatform implements WebAuthnCredentialPlatform {
       _zeroMemory(clientData, ClientDataOffsets.structSize);
       clientData.cast<Uint32>().value = WEBAUTHN_CLIENT_DATA_VERSION;
       _writeUint32At(
-          clientData, ClientDataOffsets.cbClientDataJSON, dummyClientData.length);
+        clientData,
+        ClientDataOffsets.cbClientDataJSON,
+        dummyClientData.length,
+      );
       final pbClientData = arena<Uint8>(dummyClientData.length);
       pbClientData
           .asTypedList(dummyClientData.length)
           .setAll(0, dummyClientData);
       _writePointerAt(
-          clientData, ClientDataOffsets.pbClientDataJSON, pbClientData);
-      _writePointerAt(clientData, ClientDataOffsets.pwszHashAlgId,
-          WEBAUTHN_HASH_ALGORITHM_SHA_256.toNativeUtf16(allocator: arena)
-              .cast());
+        clientData,
+        ClientDataOffsets.pbClientDataJSON,
+        pbClientData,
+      );
+      _writePointerAt(
+        clientData,
+        ClientDataOffsets.pwszHashAlgId,
+        WEBAUTHN_HASH_ALGORITHM_SHA_256.toNativeUtf16(allocator: arena).cast(),
+      );
 
       // --- GetAssertion Options (with JSON pass-through) ---
-      final options =
-          arena<Uint8>(GetAssertionOptionsOffsets.structSize);
+      final options = arena<Uint8>(GetAssertionOptionsOffsets.structSize);
       _zeroMemory(options, GetAssertionOptionsOffsets.structSize);
       options.cast<Uint32>().value = WEBAUTHN_GET_ASSERTION_OPTIONS_VERSION;
       _writeUint32At(
-          options, GetAssertionOptionsOffsets.dwTimeoutMilliseconds, 120000);
+        options,
+        GetAssertionOptionsOffsets.dwTimeoutMilliseconds,
+        120000,
+      );
 
       // JSON pass-through fields
-      _writeUint32At(options, GetAssertionOptionsOffsets.cbJsonOptions,
-          optionsJsonBytes.length);
+      _writeUint32At(
+        options,
+        GetAssertionOptionsOffsets.cbJsonOptions,
+        optionsJsonBytes.length,
+      );
       final pbJsonOptions = arena<Uint8>(optionsJsonBytes.length);
       pbJsonOptions
           .asTypedList(optionsJsonBytes.length)
           .setAll(0, optionsJsonBytes);
       _writePointerAt(
-          options, GetAssertionOptionsOffsets.pbJsonOptions, pbJsonOptions);
+        options,
+        GetAssertionOptionsOffsets.pbJsonOptions,
+        pbJsonOptions,
+      );
 
       // --- Call GetAssertion ---
       final ppResult = arena<Pointer>();
@@ -316,10 +366,11 @@ class WindowsWebAuthnPlatform implements WebAuthnCredentialPlatform {
       pAssertion = ppResult.value;
 
       // Read JSON response from the assertion result struct.
-      final cbJson = (pAssertion.cast<Uint8>()
-              + AssertionOffsets.cbAuthenticationResponseJSON)
-          .cast<Uint32>()
-          .value;
+      final cbJson =
+          (pAssertion.cast<Uint8>() +
+                  AssertionOffsets.cbAuthenticationResponseJSON)
+              .cast<Uint32>()
+              .value;
       final pbJson = _readPointerAt(
         pAssertion.cast<Uint8>(),
         AssertionOffsets.pbAuthenticationResponseJSON,
@@ -385,8 +436,7 @@ class WindowsWebAuthnPlatform implements WebAuthnCredentialPlatform {
   }
 
   /// Writes a pointer value at [offset] bytes from [base].
-  static void _writePointerAt(
-      Pointer<Uint8> base, int offset, Pointer value) {
+  static void _writePointerAt(Pointer<Uint8> base, int offset, Pointer value) {
     (base + offset).cast<Pointer>().value = value;
   }
 

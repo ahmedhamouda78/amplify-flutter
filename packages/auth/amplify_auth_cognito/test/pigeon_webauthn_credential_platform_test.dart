@@ -37,29 +37,29 @@ void main() {
   }) {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockDecodedMessageHandler<Object?>(
-      BasicMessageChannel<Object?>(
-        channel,
-        WebAuthnBridgeApi.pigeonChannelCodec,
-      ),
-      (Object? message) async {
-        if (errorCode != null) {
-          return [errorCode, errorMessage, null];
-        }
-        return [result];
-      },
-    );
+          BasicMessageChannel<Object?>(
+            channel,
+            WebAuthnBridgeApi.pigeonChannelCodec,
+          ),
+          (Object? message) async {
+            if (errorCode != null) {
+              return [errorCode, errorMessage, null];
+            }
+            return [result];
+          },
+        );
   }
 
   tearDown(() {
     for (final channel in [createChannel, getChannel, isSupportedChannel]) {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockDecodedMessageHandler<Object?>(
-        BasicMessageChannel<Object?>(
-          channel,
-          WebAuthnBridgeApi.pigeonChannelCodec,
-        ),
-        null,
-      );
+            BasicMessageChannel<Object?>(
+              channel,
+              WebAuthnBridgeApi.pigeonChannelCodec,
+            ),
+            null,
+          );
     }
   });
 
@@ -83,8 +83,7 @@ void main() {
         );
       });
 
-      test('maps notSupported error to PasskeyNotSupportedException',
-          () async {
+      test('maps notSupported error to PasskeyNotSupportedException', () async {
         setMockHandler(
           createChannel,
           errorCode: WebAuthnErrorCodes.notSupported,
@@ -108,18 +107,20 @@ void main() {
         );
       });
 
-      test('maps unknown error to PasskeyRegistrationFailedException',
-          () async {
-        setMockHandler(
-          createChannel,
-          errorCode: 'unknownError',
-          errorMessage: 'Something failed',
-        );
-        expect(
-          () => platform.createCredential('{}'),
-          throwsA(isA<PasskeyRegistrationFailedException>()),
-        );
-      });
+      test(
+        'maps unknown error to PasskeyRegistrationFailedException',
+        () async {
+          setMockHandler(
+            createChannel,
+            errorCode: 'unknownError',
+            errorMessage: 'Something failed',
+          );
+          expect(
+            () => platform.createCredential('{}'),
+            throwsA(isA<PasskeyRegistrationFailedException>()),
+          );
+        },
+      );
 
       test('preserves error message', () async {
         setMockHandler(
@@ -169,8 +170,7 @@ void main() {
         );
       });
 
-      test('maps notSupported error to PasskeyNotSupportedException',
-          () async {
+      test('maps notSupported error to PasskeyNotSupportedException', () async {
         setMockHandler(
           getChannel,
           errorCode: WebAuthnErrorCodes.notSupported,

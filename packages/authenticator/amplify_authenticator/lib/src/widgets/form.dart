@@ -542,7 +542,9 @@ class _SignInFormState extends AuthenticatorFormState<SignInForm> {
     final explicit = _passwordlessSettings?.preferredAuthMethod;
     if (explicit != null) return explicit;
     // Fall back to backend config
-    return InheritedConfig.of(context).amplifyOutputs?.auth?.passwordless?.preferredChallenge;
+    return InheritedConfig.of(
+      context,
+    ).amplifyOutputs?.auth?.passwordless?.preferredChallenge;
   }
 
   List<AuthFactorType> get _otherMethods {
@@ -553,7 +555,9 @@ class _SignInFormState extends AuthenticatorFormState<SignInForm> {
     if (settings?.availableAuthMethods != null) {
       return settings!.otherAuthMethods;
     }
-    final outputs = InheritedConfig.of(context).amplifyOutputs?.auth?.passwordless;
+    final outputs = InheritedConfig.of(
+      context,
+    ).amplifyOutputs?.auth?.passwordless;
     final all = <AuthFactorType>[
       AuthFactorType.webAuthn,
       if (outputs?.emailOtpEnabled ?? false) AuthFactorType.emailOtp,
@@ -976,9 +980,10 @@ class _ContinueSignInWithFirstFactorSelectionFormState
     }
 
     // Apply hiddenAuthMethods from PasswordlessSettings if available
-    final authenticator =
-        context.findAncestorWidgetOfExactType<Authenticator>();
-    final hiddenMethods = authenticator?.passwordlessSettings?.hiddenAuthMethods;
+    final authenticator = context
+        .findAncestorWidgetOfExactType<Authenticator>();
+    final hiddenMethods =
+        authenticator?.passwordlessSettings?.hiddenAuthMethods;
     if (hiddenMethods != null) {
       factors.removeAll(hiddenMethods);
     }
@@ -989,9 +994,7 @@ class _ContinueSignInWithFirstFactorSelectionFormState
   bool get _hasPassword => _filteredFactors.contains(AuthFactorType.password);
 
   List<AuthFactorType> get _passwordlessMethods {
-    return _filteredFactors
-        .where((f) => f != AuthFactorType.password)
-        .toList();
+    return _filteredFactors.where((f) => f != AuthFactorType.password).toList();
   }
 
   Future<void> _submitPassword() async {
@@ -1057,9 +1060,9 @@ class _ContinueSignInWithFirstFactorSelectionFormState
               padding: const EdgeInsets.only(bottom: 16),
               child: Text(
                 state.username,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
                 textAlign: TextAlign.center,
               ),
             ),

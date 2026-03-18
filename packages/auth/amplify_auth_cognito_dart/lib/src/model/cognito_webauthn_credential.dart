@@ -55,25 +55,25 @@ class CognitoWebAuthnCredential extends AuthWebAuthnCredential
 
   @override
   Map<String, Object?> toJson() => {
-        'credentialId': credentialId,
-        'relyingPartyId': relyingPartyId,
-        'createdAt': createdAt.toIso8601String(),
-        if (friendlyName != null) 'friendlyName': friendlyName,
-        if (authenticatorAttachment != null)
-          'authenticatorAttachment': authenticatorAttachment,
-        if (authenticatorTransports != null)
-          'authenticatorTransports': authenticatorTransports,
-      };
+    'credentialId': credentialId,
+    'relyingPartyId': relyingPartyId,
+    'createdAt': createdAt.toIso8601String(),
+    if (friendlyName != null) 'friendlyName': friendlyName,
+    if (authenticatorAttachment != null)
+      'authenticatorAttachment': authenticatorAttachment,
+    if (authenticatorTransports != null)
+      'authenticatorTransports': authenticatorTransports,
+  };
 
   @override
   List<Object?> get props => [
-        credentialId,
-        relyingPartyId,
-        createdAt,
-        friendlyName,
-        authenticatorAttachment,
-        authenticatorTransports,
-      ];
+    credentialId,
+    relyingPartyId,
+    createdAt,
+    friendlyName,
+    authenticatorAttachment,
+    authenticatorTransports,
+  ];
 
   @override
   String toString() {

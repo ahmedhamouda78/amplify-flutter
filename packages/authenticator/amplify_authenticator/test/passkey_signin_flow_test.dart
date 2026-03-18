@@ -13,10 +13,7 @@ void main() {
       'ContinueSignInWithFirstFactorSelection includes webAuthn as selectable factor',
       () {
         const state = ContinueSignInWithFirstFactorSelection(
-          availableFactors: {
-            AuthFactorType.password,
-            AuthFactorType.webAuthn,
-          },
+          availableFactors: {AuthFactorType.password, AuthFactorType.webAuthn},
         );
         expect(state.availableFactors, contains(AuthFactorType.webAuthn));
         expect(
@@ -46,10 +43,7 @@ void main() {
           availableFactors: {AuthFactorType.webAuthn},
         );
         expect(state.availableFactors, hasLength(1));
-        expect(
-          state.availableFactors.first,
-          AuthFactorType.webAuthn,
-        );
+        expect(state.availableFactors.first, AuthFactorType.webAuthn);
       },
     );
 
@@ -86,9 +80,7 @@ void main() {
 
     test('factor selection transitions from signIn step conceptually', () {
       // Verify that these are distinct steps in the auth flow
-      const signInState = UnauthenticatedState(
-        step: AuthenticatorStep.signIn,
-      );
+      const signInState = UnauthenticatedState(step: AuthenticatorStep.signIn);
       const factorSelectionState = ContinueSignInWithFirstFactorSelection(
         availableFactors: {AuthFactorType.webAuthn},
       );

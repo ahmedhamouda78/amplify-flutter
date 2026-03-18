@@ -12,9 +12,9 @@ import 'package:flutter/foundation.dart' show ReadBuffer, WriteBuffer;
 import 'package:flutter/services.dart';
 
 Object? _extractReplyValueOrThrow(
-    List<Object?>? replyList,
-    String channelName, {
-    required bool isNullValid,
+  List<Object?>? replyList,
+  String channelName, {
+  required bool isNullValid,
 }) {
   if (replyList == null) {
     throw PlatformException(
@@ -35,8 +35,6 @@ Object? _extractReplyValueOrThrow(
   }
   return replyList.firstOrNull;
 }
-
-
 
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
@@ -68,9 +66,13 @@ class WebAuthnBridgeApi {
   /// Constructor for [WebAuthnBridgeApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  WebAuthnBridgeApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-      : pigeonVar_binaryMessenger = binaryMessenger,
-        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+  WebAuthnBridgeApi({
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+  }) : pigeonVar_binaryMessenger = binaryMessenger,
+       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+           ? '.$messageChannelSuffix'
+           : '';
   final BinaryMessenger? pigeonVar_binaryMessenger;
 
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
@@ -82,21 +84,23 @@ class WebAuthnBridgeApi {
   /// [optionsJson] is a JSON-serialized `PublicKeyCredentialCreationOptions`.
   /// Returns a JSON-serialized `RegistrationResponseJSON`.
   Future<String> createCredential(String optionsJson) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.amplify_auth_cognito.WebAuthnBridgeApi.createCredential$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.amplify_auth_cognito.WebAuthnBridgeApi.createCredential$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[optionsJson]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[optionsJson],
+    );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    !;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    )!;
     return pigeonVar_replyValue as String;
   }
 
@@ -105,27 +109,30 @@ class WebAuthnBridgeApi {
   /// [optionsJson] is a JSON-serialized `PublicKeyCredentialRequestOptions`.
   /// Returns a JSON-serialized `AuthenticationResponseJSON`.
   Future<String> getCredential(String optionsJson) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.amplify_auth_cognito.WebAuthnBridgeApi.getCredential$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.amplify_auth_cognito.WebAuthnBridgeApi.getCredential$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[optionsJson]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[optionsJson],
+    );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    !;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    )!;
     return pigeonVar_replyValue as String;
   }
 
   /// Returns whether the current device/platform supports passkeys.
   Future<bool> isPasskeySupported() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.amplify_auth_cognito.WebAuthnBridgeApi.isPasskeySupported$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.amplify_auth_cognito.WebAuthnBridgeApi.isPasskeySupported$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -135,11 +142,10 @@ class WebAuthnBridgeApi {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    !;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    )!;
     return pigeonVar_replyValue as bool;
   }
 }

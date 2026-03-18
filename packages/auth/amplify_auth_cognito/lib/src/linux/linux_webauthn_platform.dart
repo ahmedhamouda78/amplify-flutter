@@ -158,11 +158,7 @@ class LinuxWebAuthnPlatform implements WebAuthnCredentialPlatform {
 
         // Set resident key.
         if (residentKey == 'required' || residentKey == 'preferred') {
-          _checkFido(
-            b.fidoCredSetRk(cred, fidoOptTrue),
-            'set rk',
-            true,
-          );
+          _checkFido(b.fidoCredSetRk(cred, fidoOptTrue), 'set rk', true);
         }
 
         // Set user verification.
@@ -183,10 +179,12 @@ class LinuxWebAuthnPlatform implements WebAuthnCredentialPlatform {
         final authdataBytes = _copyNativeBytes(authdataPtr, authdataLen);
 
         final credIdB64 = _base64UrlEncode(credIdBytes);
-        final clientDataJsonB64 =
-            _base64UrlEncode(Uint8List.fromList(clientDataBytes));
-        final attestationObjectB64 =
-            _base64UrlEncode(Uint8List.fromList(authdataBytes));
+        final clientDataJsonB64 = _base64UrlEncode(
+          Uint8List.fromList(clientDataBytes),
+        );
+        final attestationObjectB64 = _base64UrlEncode(
+          Uint8List.fromList(authdataBytes),
+        );
 
         // Build response dict with required Cognito fields
         final responseDict = <String, dynamic>{
@@ -211,7 +209,8 @@ class LinuxWebAuthnPlatform implements WebAuthnCredentialPlatform {
           'rawId': credIdB64,
           'type': 'public-key',
           'response': responseDict,
-          'clientExtensionResults': <String, dynamic>{},  // Required by PasskeyCreateResult.fromJson
+          'clientExtensionResults':
+              <String, dynamic>{}, // Required by PasskeyCreateResult.fromJson
           'authenticatorAttachment': 'cross-platform',
         });
 
@@ -279,11 +278,7 @@ class LinuxWebAuthnPlatform implements WebAuthnCredentialPlatform {
         );
 
         final rpIdNative = rpId.toNativeUtf8(allocator: arena);
-        _checkFido(
-          b.fidoAssertSetRp(assert_, rpIdNative),
-          'set rp',
-          false,
-        );
+        _checkFido(b.fidoAssertSetRp(assert_, rpIdNative), 'set rp', false);
 
         final uvOpt = _parseUserVerification(userVerification);
         _checkFido(b.fidoAssertSetUv(assert_, uvOpt), 'set uv', false);
@@ -326,8 +321,9 @@ class LinuxWebAuthnPlatform implements WebAuthnCredentialPlatform {
         final credIdBytes = _copyNativeBytes(credIdPtr, credIdLen);
 
         final credIdB64 = _base64UrlEncode(credIdBytes);
-        final clientDataJsonB64 =
-            _base64UrlEncode(Uint8List.fromList(clientDataBytes));
+        final clientDataJsonB64 = _base64UrlEncode(
+          Uint8List.fromList(clientDataBytes),
+        );
 
         // Assemble W3C WebAuthn response JSON.
         final responseMap = <String, dynamic>{
@@ -341,7 +337,8 @@ class LinuxWebAuthnPlatform implements WebAuthnCredentialPlatform {
             if (userIdBytes.isNotEmpty)
               'userHandle': _base64UrlEncode(userIdBytes),
           },
-          'clientExtensionResults': <String, dynamic>{},  // Required by PasskeyGetResult.fromJson
+          'clientExtensionResults':
+              <String, dynamic>{}, // Required by PasskeyGetResult.fromJson
           'authenticatorAttachment': 'cross-platform',
         };
 
@@ -422,7 +419,10 @@ class LinuxWebAuthnPlatform implements WebAuthnCredentialPlatform {
   }
 
   /// Maps a libfido2 error code to the appropriate [PasskeyException].
-  static PasskeyException _mapLibFido2Error(int errorCode, bool isRegistration) {
+  static PasskeyException _mapLibFido2Error(
+    int errorCode,
+    bool isRegistration,
+  ) {
     switch (errorCode) {
       case fidoErrNotAllowed:
         return const PasskeyCancelledException(

@@ -25,9 +25,9 @@ class CognitoWebAuthnClient {
     required String region,
     required AWSHttpClient httpClient,
     String? endpoint,
-  })  : _region = region,
-        _httpClient = httpClient,
-        _endpoint = endpoint;
+  }) : _region = region,
+       _httpClient = httpClient,
+       _endpoint = endpoint;
 
   final String _region;
   final AWSHttpClient _httpClient;
@@ -81,9 +81,7 @@ class CognitoWebAuthnClient {
       errorJson = json.decode(responseBody) as Map<String, dynamic>;
     } on Object {
       // If we can't parse the error body, throw a generic exception.
-      throw UnknownServiceException(
-        'Service returned an error: $responseBody',
-      );
+      throw UnknownServiceException('Service returned an error: $responseBody');
     }
 
     final errorType = errorJson['__type'] as String?;
@@ -93,10 +91,9 @@ class CognitoWebAuthnClient {
         'An unknown error occurred';
 
     // Extract the short error type name (may be fully qualified).
-    final shortType =
-        (errorType?.contains('#') ?? false)
-            ? errorType!.split('#').last
-            : errorType;
+    final shortType = (errorType?.contains('#') ?? false)
+        ? errorType!.split('#').last
+        : errorType;
 
     throw switch (shortType) {
       'WebAuthnNotEnabledException' => UnknownServiceException(
@@ -149,8 +146,7 @@ class CognitoWebAuthnClient {
     required String accessToken,
   }) async {
     final responseJson = await _makeRequest(
-      target:
-          'AWSCognitoIdentityProviderService.StartWebAuthnRegistration',
+      target: 'AWSCognitoIdentityProviderService.StartWebAuthnRegistration',
       body: {'AccessToken': accessToken},
     );
 
@@ -169,12 +165,8 @@ class CognitoWebAuthnClient {
     required PasskeyCreateResult credential,
   }) async {
     await _makeRequest(
-      target:
-          'AWSCognitoIdentityProviderService.CompleteWebAuthnRegistration',
-      body: {
-        'AccessToken': accessToken,
-        'Credential': credential.toJson(),
-      },
+      target: 'AWSCognitoIdentityProviderService.CompleteWebAuthnRegistration',
+      body: {'AccessToken': accessToken, 'Credential': credential.toJson()},
     );
   }
 
@@ -188,9 +180,7 @@ class CognitoWebAuthnClient {
     int? maxResults,
     String? nextToken,
   }) async {
-    final body = <String, dynamic>{
-      'AccessToken': accessToken,
-    };
+    final body = <String, dynamic>{'AccessToken': accessToken};
     if (maxResults != null) {
       body['MaxResults'] = maxResults;
     }
@@ -199,18 +189,15 @@ class CognitoWebAuthnClient {
     }
 
     final responseJson = await _makeRequest(
-      target:
-          'AWSCognitoIdentityProviderService.ListWebAuthnCredentials',
+      target: 'AWSCognitoIdentityProviderService.ListWebAuthnCredentials',
       body: body,
     );
 
-    final credentialsJson =
-        responseJson['Credentials'] as List<dynamic>? ?? [];
+    final credentialsJson = responseJson['Credentials'] as List<dynamic>? ?? [];
     final credentials = credentialsJson
         .map(
-          (e) => WebAuthnCredentialDescription.fromJson(
-            e as Map<String, dynamic>,
-          ),
+          (e) =>
+              WebAuthnCredentialDescription.fromJson(e as Map<String, dynamic>),
         )
         .toList();
 
@@ -228,12 +215,8 @@ class CognitoWebAuthnClient {
     required String credentialId,
   }) async {
     await _makeRequest(
-      target:
-          'AWSCognitoIdentityProviderService.DeleteWebAuthnCredential',
-      body: {
-        'AccessToken': accessToken,
-        'CredentialId': credentialId,
-      },
+      target: 'AWSCognitoIdentityProviderService.DeleteWebAuthnCredential',
+      body: {'AccessToken': accessToken, 'CredentialId': credentialId},
     );
   }
 }

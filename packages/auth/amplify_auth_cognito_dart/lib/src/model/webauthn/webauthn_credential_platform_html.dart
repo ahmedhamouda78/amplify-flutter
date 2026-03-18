@@ -28,7 +28,8 @@ class WebAuthnCredentialPlatformImpl implements WebAuthnCredentialPlatform {
       if (web.window.navigator.credentials == null) return false;
 
       // Check that PublicKeyCredential is available in the global scope.
-      return globalContext.getProperty<JSAny?>('PublicKeyCredential'.toJS) != null;
+      return globalContext.getProperty<JSAny?>('PublicKeyCredential'.toJS) !=
+          null;
     } on Object {
       return false;
     }
@@ -38,19 +39,17 @@ class WebAuthnCredentialPlatformImpl implements WebAuthnCredentialPlatform {
   Future<String> createCredential(String optionsJson) async {
     try {
       final options = json.decode(optionsJson) as Map<String, dynamic>;
-      final publicKeyOptions =
-          options.containsKey('publicKey')
-              ? options['publicKey'] as Map<String, dynamic>
-              : options;
+      final publicKeyOptions = options.containsKey('publicKey')
+          ? options['publicKey'] as Map<String, dynamic>
+          : options;
 
       // Convert base64url fields to ArrayBuffer.
       _convertField(publicKeyOptions, 'challenge');
       _convertUserIdField(publicKeyOptions);
       _convertCredentialIds(publicKeyOptions, 'excludeCredentials');
 
-      final jsOptions = <String, dynamic>{
-        'publicKey': publicKeyOptions,
-      }.jsify() as JSObject;
+      final jsOptions =
+          <String, dynamic>{'publicKey': publicKeyOptions}.jsify() as JSObject;
 
       final credential = await web.window.navigator.credentials
           .create(jsOptions as web.CredentialCreationOptions)
@@ -68,9 +67,17 @@ class WebAuthnCredentialPlatformImpl implements WebAuthnCredentialPlatform {
 
       final attestationResponse = <String, dynamic>{
         'clientDataJSON': _arrayBufferToBase64url(response.clientDataJSON),
-        'attestationObject': _arrayBufferToBase64url(response.attestationObject),
-        'transports': response.getTransports().toDart.map((t) => t.toDart).toList(),
-        'authenticatorData': _arrayBufferToBase64url(response.getAuthenticatorData()),
+        'attestationObject': _arrayBufferToBase64url(
+          response.attestationObject,
+        ),
+        'transports': response
+            .getTransports()
+            .toDart
+            .map((t) => t.toDart)
+            .toList(),
+        'authenticatorData': _arrayBufferToBase64url(
+          response.getAuthenticatorData(),
+        ),
         'publicKeyAlgorithm': response.getPublicKeyAlgorithm(),
       };
 
@@ -100,18 +107,16 @@ class WebAuthnCredentialPlatformImpl implements WebAuthnCredentialPlatform {
   Future<String> getCredential(String optionsJson) async {
     try {
       final options = json.decode(optionsJson) as Map<String, dynamic>;
-      final publicKeyOptions =
-          options.containsKey('publicKey')
-              ? options['publicKey'] as Map<String, dynamic>
-              : options;
+      final publicKeyOptions = options.containsKey('publicKey')
+          ? options['publicKey'] as Map<String, dynamic>
+          : options;
 
       // Convert base64url fields to ArrayBuffer.
       _convertField(publicKeyOptions, 'challenge');
       _convertCredentialIds(publicKeyOptions, 'allowCredentials');
 
-      final jsOptions = <String, dynamic>{
-        'publicKey': publicKeyOptions,
-      }.jsify() as JSObject;
+      final jsOptions =
+          <String, dynamic>{'publicKey': publicKeyOptions}.jsify() as JSObject;
 
       final credential = await web.window.navigator.credentials
           .get(jsOptions as web.CredentialRequestOptions)
@@ -132,19 +137,17 @@ class WebAuthnCredentialPlatformImpl implements WebAuthnCredentialPlatform {
         'rawId': _arrayBufferToBase64url(pkCredential.rawId),
         'type': 'public-key',
         'response': <String, dynamic>{
-          'clientDataJSON': _arrayBufferToBase64url(
-            response.clientDataJSON,
-          ),
+          'clientDataJSON': _arrayBufferToBase64url(response.clientDataJSON),
           'authenticatorData': _arrayBufferToBase64url(
             response.authenticatorData,
           ),
           'signature': _arrayBufferToBase64url(response.signature),
-          'userHandle':
-              response.userHandle != null
-                  ? _arrayBufferToBase64url(response.userHandle!)
-                  : null,
+          'userHandle': response.userHandle != null
+              ? _arrayBufferToBase64url(response.userHandle!)
+              : null,
         },
-        'clientExtensionResults': <String, dynamic>{},  // Required by PasskeyGetResult.fromJson
+        'clientExtensionResults':
+            <String, dynamic>{}, // Required by PasskeyGetResult.fromJson
         'authenticatorAttachment': 'platform',
       };
 

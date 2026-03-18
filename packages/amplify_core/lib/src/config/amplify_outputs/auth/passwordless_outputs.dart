@@ -17,7 +17,9 @@ class PasswordlessOutputs {
       emailOtpEnabled: json['email_otp_enabled'] as bool? ?? false,
       smsOtpEnabled: json['sms_otp_enabled'] as bool? ?? false,
       webAuthnEnabled: json['web_authn'] != null,
-      preferredChallenge: _parseChallenge(json['preferred_challenge'] as String?),
+      preferredChallenge: _parseChallenge(
+        json['preferred_challenge'] as String?,
+      ),
     );
   }
 
