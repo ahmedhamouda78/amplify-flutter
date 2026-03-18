@@ -86,7 +86,10 @@ void main() {
       expect(serialized['id'], 'credential-id-base64url');
       expect(serialized['rawId'], 'credential-id-base64url');
       expect(serialized['type'], 'public-key');
-      expect(serialized['response']['clientDataJSON'], 'client-data-base64url');
+      expect(
+        (serialized['response'] as Map)['clientDataJSON'],
+        'client-data-base64url',
+      );
     });
 
     test('toJson preserves W3C field names', () {
@@ -103,8 +106,8 @@ void main() {
 
       final json = result.toJson();
       expect(json['clientDataJSON'], isNull); // on outer object
-      expect(json['response']['clientDataJSON'], 'client-data');
-      expect(json['response']['attestationObject'], 'attestation');
+      expect((json['response'] as Map)['clientDataJSON'], 'client-data');
+      expect((json['response'] as Map)['attestationObject'], 'attestation');
     });
   });
 
@@ -132,7 +135,7 @@ void main() {
       final serialized = result.toJson();
       expect(serialized['id'], 'credential-id-base64url');
       expect(serialized['type'], 'public-key');
-      expect(serialized['response']['signature'], 'signature-base64url');
+      expect((serialized['response'] as Map)['signature'], 'signature-base64url');
     });
   });
 }

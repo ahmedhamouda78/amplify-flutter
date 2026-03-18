@@ -48,7 +48,7 @@ void main() {
 
   group('base64url round-trip', () {
     test('encode/decode round-trip preserves data', () {
-      final original = 'Hello, WebAuthn World!';
+      const original = 'Hello, WebAuthn World!';
       final bytes = utf8.encode(original);
       final encoded = base64UrlEncode(bytes);
       final decoded = base64UrlDecode(encoded);

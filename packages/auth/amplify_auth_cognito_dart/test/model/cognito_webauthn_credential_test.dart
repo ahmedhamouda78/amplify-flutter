@@ -33,7 +33,7 @@ void main() {
         createdAt: DateTime.utc(2024, 1, 15, 10, 30),
         friendlyName: 'My iPhone',
         authenticatorAttachment: 'platform',
-        authenticatorTransports: ['internal'],
+        authenticatorTransports: const ['internal'],
       );
 
       final json = credential.toJson();

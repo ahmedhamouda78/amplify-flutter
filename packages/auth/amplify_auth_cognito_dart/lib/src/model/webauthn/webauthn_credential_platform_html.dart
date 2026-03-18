@@ -24,9 +24,8 @@ class WebAuthnCredentialPlatformImpl implements WebAuthnCredentialPlatform {
   Future<bool> isPasskeySupported() async {
     try {
       // Check that the CredentialsContainer API exists on navigator.
-      final credentials = web.window.navigator.credentials;
-      // ignore: unnecessary_null_comparison
-      if (credentials == null) return false;
+      // ignore: unnecessary_null_comparison, dead_code
+      if (web.window.navigator.credentials == null) return false;
 
       // Check that PublicKeyCredential is available in the global scope.
       return globalContext.getProperty<JSAny?>('PublicKeyCredential'.toJS) != null;
@@ -206,6 +205,7 @@ class WebAuthnCredentialPlatformImpl implements WebAuthnCredentialPlatform {
     String? domExceptionName;
 
     // Try to extract DOMException name from JS error.
+    // ignore: invalid_runtime_check_with_js_interop_types
     if (error is JSObject) {
       try {
         final name = (error as web.DOMException).name;

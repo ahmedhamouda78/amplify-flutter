@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-// ignore_for_file: invalid_use_of_protected_member
+// ignore_for_file: invalid_use_of_protected_member, close_sinks
 
 import 'dart:async';
 import 'dart:convert';
@@ -11,13 +11,11 @@ import 'package:amplify_auth_cognito_dart/amplify_auth_cognito_dart.dart'
 import 'package:amplify_auth_cognito_dart/src/credentials/cognito_keys.dart';
 import 'package:amplify_auth_cognito_dart/src/state/cognito_state_machine.dart';
 import 'package:amplify_auth_cognito_test/common/matchers.dart';
-import 'package:amplify_auth_cognito_test/common/mock_clients.dart';
 import 'package:amplify_auth_cognito_test/common/mock_config.dart';
 import 'package:amplify_auth_cognito_test/common/mock_secure_storage.dart';
 import 'package:amplify_auth_cognito_test/common/mock_webauthn.dart';
 import 'package:amplify_core/amplify_core.dart';
 import 'package:amplify_secure_storage_dart/amplify_secure_storage_dart.dart';
-import 'package:aws_common/aws_common.dart';
 import 'package:aws_common/src/http/mock.dart';
 import 'package:test/test.dart';
 
@@ -32,7 +30,6 @@ void main() {
   late MockSecureStorage secureStorage;
 
   late StreamController<AuthHubEvent> hubEventsController;
-  late Stream<AuthHubEvent> hubEvents;
 
   final testAuthRepo = AmplifyAuthProviderRepository();
 
@@ -47,7 +44,6 @@ void main() {
         ..stateMachine = stateMachine;
 
       hubEventsController = StreamController();
-      hubEvents = hubEventsController.stream;
       Amplify.Hub.listen(HubChannel.Auth, hubEventsController.add);
     });
 
@@ -79,7 +75,7 @@ void main() {
         // Mock HTTP client for Cognito WebAuthn API calls
         final mockHttpClient = MockAWSHttpClient((request, isCancelled) async {
           final target = request.headers['X-Amz-Target'];
-          final bodyMap = json.decode(utf8.decode(request.bodyBytes)) as Map<String, dynamic>;
+          json.decode(utf8.decode(request.bodyBytes)) as Map<String, dynamic>;
 
           if (target == 'AWSCognitoIdentityProviderService.StartWebAuthnRegistration') {
             // Return StartWebAuthnRegistration response with creation options
