@@ -13,7 +13,13 @@ export '../exception/amplify_exception.dart'
         UserCancelledException,
         AuthValidationException,
         NetworkException,
-        UnknownException;
+        UnknownException,
+        PasskeyException,
+        PasskeyNotSupportedException,
+        PasskeyCancelledException,
+        PasskeyRegistrationFailedException,
+        PasskeyAssertionFailedException,
+        PasskeyRpMismatchException;
 // Attributes
 export 'attribute/auth_next_update_attribute_step.dart';
 export 'attribute/auth_update_attribute_step.dart';
@@ -32,6 +38,8 @@ export 'attribute/update_user_attributes_options.dart';
 export 'auth_code_delivery_details.dart';
 export 'auth_device.dart';
 export 'auth_next_step.dart';
+// Credentials
+export 'credential/auth_webauthn_credential.dart';
 // Auto Sign In
 export 'auto_sign_in/auto_sign_in_options.dart';
 // Hub

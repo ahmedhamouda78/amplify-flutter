@@ -520,11 +520,61 @@ class AuthenticatorState extends ChangeNotifier {
 
     TextInput.finishAutofillContext(shouldSave: true);
 
-    final signIn = AuthUsernamePasswordSignInData(
-      username: _username.trim(),
-      password: _password.trim(),
+    final preferred = _authBloc.passwordlessSettings?.preferredAuthMethod;
+
+    if (preferred != null && preferred != AuthFactorType.password) {
+      final signIn = AuthPasswordlessSignInData(
+        username: _username.trim(),
+        preferredFactor: preferred,
+      );
+      _authBloc.add(AuthSignIn(signIn));
+    } else {
+      final signIn = AuthUsernamePasswordSignInData(
+        username: _username.trim(),
+        password: _password.trim(),
+      );
+      _authBloc.add(AuthSignIn(signIn));
+    }
+    await nextBlocEvent();
+    _setIsBusy(false);
+  }
+
+  /// Sign in with username and password, bypassing any passwordless preference.
+  Future<void> signInWithPassword() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    _setIsBusy(true);
+    TextInput.finishAutofillContext(shouldSave: true);
+    _authBloc.add(
+      AuthSignIn(
+        AuthUsernamePasswordSignInData(
+          username: _username.trim(),
+          password: _password.trim(),
+        ),
+      ),
     );
-    _authBloc.add(AuthSignIn(signIn));
+    await nextBlocEvent();
+    _setIsBusy(false);
+  }
+
+  /// Sign in with a specific passwordless factor (webAuthn, emailOtp, smsOtp).
+  ///
+  /// Only validates that a username is present — password validation is skipped
+  /// since passwordless methods don't require one.
+  Future<void> signInWithFactor(AuthFactorType factor) async {
+    if (_username.trim().isEmpty) {
+      return;
+    }
+    _setIsBusy(true);
+    _authBloc.add(
+      AuthSignIn(
+        AuthPasswordlessSignInData(
+          username: _username.trim(),
+          preferredFactor: factor,
+        ),
+      ),
+    );
     await nextBlocEvent();
     _setIsBusy(false);
   }
