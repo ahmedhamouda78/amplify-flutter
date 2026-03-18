@@ -1,7 +1,12 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import { defineAuth } from "@aws-amplify/backend";
+import { defineAuth, defineFunction } from "@aws-amplify/backend";
+
+export const preSignUp = defineFunction({
+  name: "pre-sign-up",
+  entry: "./pre-sign-up-handler.ts",
+});
 
 export const auth = defineAuth({
   loginWith: {
@@ -16,5 +21,8 @@ export const auth = defineAuth({
 		phoneNumber: {
 			required: false
 		}
-	}
+	},
+  triggers: {
+    preSignUp,
+  },
 });
