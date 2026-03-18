@@ -6,6 +6,7 @@ import 'package:amplify_core/src/config/amplify_outputs/auth/mfa.dart';
 import 'package:amplify_core/src/config/amplify_outputs/auth/oauth_outputs.dart';
 import 'package:amplify_core/src/config/amplify_outputs/auth/password_policy.dart';
 import 'package:amplify_core/src/config/amplify_outputs/auth/passwordless_outputs.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 part 'auth_outputs.g.dart';
@@ -109,6 +110,7 @@ class AuthOutputs
   final List<MfaMethod>? mfaMethods;
 
   /// Passwordless authentication configuration.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   final PasswordlessOutputs? passwordless;
 
   @override
