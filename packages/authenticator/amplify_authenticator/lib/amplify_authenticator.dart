@@ -734,8 +734,8 @@ class _AuthenticatorState extends State<Authenticator> {
                 confirmSignInWithTotpMfaCodeForm: ConfirmSignInMFAForm(),
                 confirmSignInWithOtpCodeForm: ConfirmSignInMFAForm(),
                 continueSignInWithFirstFactorSelectionForm:
-                    ContinueSignInWithFirstFactorSelectionForm(),
-                passkeyPromptForm: PasskeyPromptForm(),
+                    const ContinueSignInWithFirstFactorSelectionForm(),
+                passkeyPromptForm: const PasskeyPromptForm(),
                 verifyUserForm: VerifyUserForm(),
                 confirmVerifyUserForm: ConfirmVerifyUserForm(),
                 child: widget.child,

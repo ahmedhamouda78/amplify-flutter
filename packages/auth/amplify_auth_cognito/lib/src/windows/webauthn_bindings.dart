@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-// ignore_for_file: non_constant_identifier_names, constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, constant_identifier_names, public_member_api_docs
 
 import 'dart:ffi';
 

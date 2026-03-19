@@ -60,7 +60,7 @@ void main() {
       expect(state.props[1], true); // isRegistering
       expect(state.props[2], false); // isSuccess
       expect(state.props[3], 'error'); // errorMessage
-      expect(state.props[4], const []); // registeredCredentials
+      expect(state.props[4], const <Never>[]); // registeredCredentials
     });
 
     test('runtimeTypeName returns correct value', () {

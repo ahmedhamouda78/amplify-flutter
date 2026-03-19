@@ -80,7 +80,7 @@ void main() {
 
     test('factor selection transitions from signIn step conceptually', () {
       // Verify that these are distinct steps in the auth flow
-      const signInState = UnauthenticatedState(step: AuthenticatorStep.signIn);
+      const signInState = UnauthenticatedState.signIn;
       const factorSelectionState = ContinueSignInWithFirstFactorSelection(
         availableFactors: {AuthFactorType.webAuthn},
       );

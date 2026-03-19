@@ -3,8 +3,6 @@
 
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_authenticator/src/l10n/button_resolver.dart';
-import 'package:amplify_authenticator/src/l10n/message_resolver.dart';
-import 'package:amplify_authenticator/src/l10n/title_resolver.dart';
 import 'package:amplify_authenticator/src/state/auth_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 

@@ -6,7 +6,7 @@
 
 import 'package:amplify_auth_cognito_dart/amplify_auth_cognito_dart.dart';
 
-/// Stub for web. Never instantiated on web (guarded by [zIsWeb] in addPlugin).
+/// Stub for web. Never instantiated on web (guarded by `zIsWeb` in addPlugin).
 class WindowsWebAuthnPlatform implements WebAuthnCredentialPlatform {
   @override
   Future<bool> isPasskeySupported() => Future.value(false);

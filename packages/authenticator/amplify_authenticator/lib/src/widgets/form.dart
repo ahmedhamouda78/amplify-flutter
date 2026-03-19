@@ -1,6 +1,8 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+// ignore_for_file: diagnostic_describe_all_properties, cascade_invocations
+
 library;
 
 import 'package:amplify_authenticator/amplify_authenticator.dart';
@@ -916,7 +918,7 @@ class ConfirmVerifyUserForm extends AuthenticatorForm {
 /// {@endtemplate}
 class ContinueSignInWithFirstFactorSelectionForm extends AuthenticatorForm {
   /// {@macro amplify_authenticator.continue_sign_in_with_first_factor_selection_form}
-  ContinueSignInWithFirstFactorSelectionForm({super.key})
+  const ContinueSignInWithFirstFactorSelectionForm({super.key})
     : super._(fields: const [], actions: const []);
 
   @override
@@ -972,7 +974,7 @@ class _ContinueSignInWithFirstFactorSelectionFormState
   }
 
   Set<AuthFactorType> get _filteredFactors {
-    var factors = Set<AuthFactorType>.from(_availableFactors);
+    final factors = Set<AuthFactorType>.from(_availableFactors);
 
     // Remove passkey if not supported on this platform
     if (!_isPasskeySupported) {
@@ -1006,6 +1008,7 @@ class _ContinueSignInWithFirstFactorSelectionFormState
     final confirm = AuthConfirmSignInData(confirmationValue: password);
     final bloc = InheritedAuthBloc.of(context, listen: false);
     bloc.add(AuthConfirmSignIn(confirm));
+    // ignore: invalid_use_of_visible_for_testing_member
     await state.nextBlocEvent();
 
     if (mounted) {
@@ -1019,6 +1022,7 @@ class _ContinueSignInWithFirstFactorSelectionFormState
     final confirm = AuthConfirmSignInData(confirmationValue: factor.value);
     final bloc = InheritedAuthBloc.of(context, listen: false);
     bloc.add(AuthConfirmSignIn(confirm));
+    // ignore: invalid_use_of_visible_for_testing_member
     await state.nextBlocEvent();
 
     if (mounted) {
@@ -1156,7 +1160,8 @@ class _ContinueSignInWithFirstFactorSelectionFormState
 /// {@endtemplate}
 class PasskeyPromptForm extends AuthenticatorForm {
   /// {@macro amplify_authenticator.passkey_prompt_form}
-  PasskeyPromptForm({super.key}) : super._(fields: const [], actions: const []);
+  const PasskeyPromptForm({super.key})
+    : super._(fields: const [], actions: const []);
 
   @override
   AuthenticatorFormState<PasskeyPromptForm> createState() =>

@@ -5,12 +5,11 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:typed_data';
 
+import 'package:amplify_auth_cognito/src/windows/webauthn_bindings.dart';
 // ignore: implementation_imports
 import 'package:amplify_auth_cognito_dart/src/model/webauthn/webauthn_credential_platform.dart';
 import 'package:amplify_core/amplify_core.dart';
 import 'package:ffi/ffi.dart';
-
-import 'package:amplify_auth_cognito/src/windows/webauthn_bindings.dart';
 
 /// {@template amplify_auth_cognito.windows_webauthn_platform}
 /// Windows implementation of [WebAuthnCredentialPlatform] using the

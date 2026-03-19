@@ -68,7 +68,7 @@ class MockWebAuthnBindings extends WebAuthnBindings {
           // Allocate a mock result struct with JSON response.
           // Structure layout: we write the JSON response at expected offsets.
           final mockStruct = calloc<Uint8>(256);
-          final jsonResponse = '{"id":"mock-credential-id"}';
+          const jsonResponse = '{"id":"mock-credential-id"}';
           final jsonBytes = utf8.encode(jsonResponse);
 
           // Write cbRegistrationResponseJSON at offset 152 (DWORD = Uint32)
@@ -98,7 +98,7 @@ class MockWebAuthnBindings extends WebAuthnBindings {
     if (mockGetAssertionResult == S_OK) {
       // Allocate a mock result struct with JSON response.
       final mockStruct = calloc<Uint8>(256);
-      final jsonResponse = '{"id":"mock-assertion-id"}';
+      const jsonResponse = '{"id":"mock-assertion-id"}';
       final jsonBytes = utf8.encode(jsonResponse);
 
       // Write cbAuthenticationResponseJSON at offset 104 (DWORD = Uint32)

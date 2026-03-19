@@ -1,6 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+// ignore_for_file: diagnostic_describe_all_properties
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_authenticator/src/constants/authenticator_constants.dart';
 import 'package:amplify_authenticator/src/keys.dart';
@@ -186,7 +187,7 @@ class SignInButton extends AuthenticatorElevatedButton {
 /// A sign-in button that always uses the password flow, bypassing any
 /// passwordless preference. Used in the "Other sign-in options" view.
 class SignInWithPasswordButton extends AuthenticatorElevatedButton {
-  const SignInWithPasswordButton() : super();
+  const SignInWithPasswordButton({super.key}) : super();
 
   @override
   ButtonResolverKey get labelKey => ButtonResolverKey.signIn;
@@ -198,7 +199,7 @@ class SignInWithPasswordButton extends AuthenticatorElevatedButton {
 
 /// Password sign-in button with "Sign in with password" label.
 class SignInWithPasswordLabeledButton extends AuthenticatorElevatedButton {
-  const SignInWithPasswordLabeledButton() : super();
+  const SignInWithPasswordLabeledButton({super.key}) : super();
 
   @override
   ButtonResolverKey get labelKey => ButtonResolverKey.signInWithPassword;
@@ -210,7 +211,7 @@ class SignInWithPasswordLabeledButton extends AuthenticatorElevatedButton {
 
 /// A sign-in button that uses the passkey (passwordless) flow.
 class SignInWithPasskeyButton extends AuthenticatorElevatedButton {
-  const SignInWithPasskeyButton() : super();
+  const SignInWithPasskeyButton({super.key}) : super();
 
   @override
   ButtonResolverKey get labelKey => ButtonResolverKey.signInWithPasskey;
@@ -222,7 +223,7 @@ class SignInWithPasskeyButton extends AuthenticatorElevatedButton {
 
 /// A sign-in button for a specific [AuthFactorType] (passwordless).
 class FactorSignInButton extends AuthenticatorElevatedButton {
-  const FactorSignInButton({required this.factor}) : super();
+  const FactorSignInButton({required this.factor, super.key}) : super();
 
   final AuthFactorType factor;
 

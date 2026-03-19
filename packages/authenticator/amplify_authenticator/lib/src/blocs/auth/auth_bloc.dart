@@ -6,7 +6,6 @@ import 'dart:async';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_authenticator/src/blocs/auth/auth_data.dart';
-import 'package:amplify_authenticator/src/models/passwordless_settings.dart';
 import 'package:amplify_authenticator/src/services/amplify_auth_service.dart';
 import 'package:amplify_authenticator/src/state/auth_state.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';

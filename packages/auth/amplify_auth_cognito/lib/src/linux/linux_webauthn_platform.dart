@@ -1,17 +1,18 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+// ignore_for_file: cascade_invocations
+
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:typed_data';
 
+import 'package:amplify_auth_cognito/src/linux/libfido2_bindings.dart';
 // ignore: implementation_imports
 import 'package:amplify_auth_cognito_dart/src/model/webauthn/webauthn_credential_platform.dart';
 import 'package:amplify_core/amplify_core.dart';
 import 'package:crypto/crypto.dart';
 import 'package:ffi/ffi.dart';
-
-import 'package:amplify_auth_cognito/src/linux/libfido2_bindings.dart';
 
 /// Maximum number of FIDO2 devices to discover.
 const int _maxDevices = 64;

@@ -1,6 +1,8 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+// ignore_for_file: unnecessary_underscores
+
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:typed_data';
@@ -8,8 +10,8 @@ import 'dart:typed_data';
 import 'package:amplify_auth_cognito/src/linux/libfido2_bindings.dart';
 import 'package:amplify_auth_cognito/src/linux/linux_webauthn_platform.dart';
 import 'package:amplify_core/amplify_core.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:ffi/ffi.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 /// Mock LibFido2Bindings for testing.
 class MockLibFido2Bindings extends LibFido2Bindings {
@@ -340,7 +342,7 @@ void main() {
 
         expect(decoded['type'], 'public-key');
         expect(decoded['id'], isNotEmpty);
-        expect(decoded['response'], isA<Map>());
+        expect(decoded['response'], isA<Map<String, dynamic>>());
       });
 
       test('throws PasskeyCancelledException for fidoErrNotAllowed', () async {
@@ -475,8 +477,11 @@ void main() {
 
         expect(decoded['type'], 'public-key');
         expect(decoded['id'], isNotEmpty);
-        expect(decoded['response'], isA<Map>());
-        expect(decoded['response']['signature'], isNotEmpty);
+        expect(decoded['response'], isA<Map<String, dynamic>>());
+        expect(
+          (decoded['response'] as Map<String, dynamic>)['signature'],
+          isNotEmpty,
+        );
       });
 
       test('throws PasskeyCancelledException for fidoErrNotAllowed', () async {
