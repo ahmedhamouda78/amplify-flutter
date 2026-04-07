@@ -14,58 +14,8 @@ import Foundation
   #error("Unsupported platform.")
 #endif
 
-/// Error class for passing custom error details to Dart side.
-final class PigeonError: Error {
-  let code: String
-  let message: String?
-  let details: Sendable?
-
-  init(code: String, message: String?, details: Sendable?) {
-    self.code = code
-    self.message = message
-    self.details = details
-  }
-
-  var localizedDescription: String {
-    return
-      "PigeonError(code: \(code), message: \(message ?? "<nil>"), details: \(details ?? "<nil>")"
-  }
-}
-
-private func wrapResult(_ result: Any?) -> [Any?] {
-  return [result]
-}
-
-private func wrapError(_ error: Any) -> [Any?] {
-  if let pigeonError = error as? PigeonError {
-    return [
-      pigeonError.code,
-      pigeonError.message,
-      pigeonError.details,
-    ]
-  }
-  if let flutterError = error as? FlutterError {
-    return [
-      flutterError.code,
-      flutterError.message,
-      flutterError.details,
-    ]
-  }
-  return [
-    "\(error)",
-    "\(type(of: error))",
-    "Stacktrace: \(Thread.callStackSymbols)",
-  ]
-}
-
-private func isNullish(_ value: Any?) -> Bool {
-  return value is NSNull || value == nil
-}
-
-private func nilOrValue<T>(_ value: Any?) -> T? {
-  if value is NSNull { return nil }
-  return value as! T?
-}
+// PigeonError, wrapResult, wrapError, isNullish, and nilOrValue
+// are defined in messages.g.swift
 
 
 private class WebAuthnBridgePigeonCodecReader: FlutterStandardReader {

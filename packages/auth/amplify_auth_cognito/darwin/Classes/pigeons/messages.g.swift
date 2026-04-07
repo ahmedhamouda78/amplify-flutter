@@ -32,11 +32,11 @@ final class PigeonError: Error {
   }
 }
 
-private func wrapResult(_ result: Any?) -> [Any?] {
+func wrapResult(_ result: Any?) -> [Any?] {
   return [result]
 }
 
-private func wrapError(_ error: Any) -> [Any?] {
+func wrapError(_ error: Any) -> [Any?] {
   if let pigeonError = error as? PigeonError {
     return [
       pigeonError.code,
@@ -62,11 +62,11 @@ private func createConnectionError(withChannelName channelName: String) -> Pigeo
   return PigeonError(code: "channel-error", message: "Unable to establish connection on channel: '\(channelName)'.", details: "")
 }
 
-private func isNullish(_ value: Any?) -> Bool {
+func isNullish(_ value: Any?) -> Bool {
   return value is NSNull || value == nil
 }
 
-private func nilOrValue<T>(_ value: Any?) -> T? {
+func nilOrValue<T>(_ value: Any?) -> T? {
   if value is NSNull { return nil }
   return value as! T?
 }
